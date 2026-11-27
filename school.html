@@ -588,6 +588,8 @@ h1, h2, h3, p { margin: 0; }
 .who b { font-size: 14px; line-height: 1.2; }
 .who button { width: auto; padding: 0; color: var(--ink-3); font-size: 13px; font-weight: 600; text-align: left; }
 .who button:hover { color: var(--ink); }
+.who a { color: var(--ink-3); font-size: 13px; font-weight: 600; }
+.who a:hover { color: var(--ink); }
 .desk-main { padding: 36px 36px 72px; min-width: 0; }
 .desk-wrap { max-width: 980px; }
 .desk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
@@ -1566,7 +1568,7 @@ function selectBox(name, value, options, placeholder) {
 }
 
 function loginScreen() {
-  return `<div class="desk-login"><form class="desk-login-card" data-act="stop"><div class="logo">${daisyMark()}<span>Daisy</span></div><h1 class="d">Кабинет школы</h1><p class="sub">Семьи, группы и филиалы в одном месте.</p><label class="field"><span>Логин</span><input class="input" id="login-user" autocomplete="username" value="${esc(ui.loginUser)}"></label><label class="field"><span>Пароль</span><input class="input" id="login-pass" type="password" autocomplete="current-password" value="${esc(ui.loginPass)}"></label>${ui.loginError ? `<p class="fine bad">${esc(ui.loginError)}</p>` : ""}<button class="btn block" type="button" data-act="login">Войти</button><p class="fine">Локальный вход: admin / daisy-local. В этой демке сервер не проверяет пароль: подойдут эти или любые непустые.</p></form></div>`;
+  return `<div class="desk-login"><form class="desk-login-card" data-act="stop"><div class="logo">${daisyMark()}<span>Daisy</span></div><h1 class="d">Кабинет школы</h1><p class="sub">Семьи, группы и филиалы в одном месте.</p><label class="field"><span>Логин</span><input class="input" id="login-user" autocomplete="username" value="${esc(ui.loginUser)}"></label><label class="field"><span>Пароль</span><input class="input" id="login-pass" type="password" autocomplete="current-password" value="${esc(ui.loginPass)}"></label>${ui.loginError ? `<p class="fine bad">${esc(ui.loginError)}</p>` : ""}<button class="btn block" type="button" data-act="login">Войти</button><p class="fine">Локальный вход: admin / daisy-local. В этой демке сервер не проверяет пароль: подойдут эти или любые непустые.</p><a class="sub linkish" href="./">К выбору демо</a></form></div>`;
 }
 
 function shell(inner) {
@@ -1585,7 +1587,7 @@ function shell(inner) {
     points: ui.screen === "points" || ui.screen === "point" || ui.screen === "rubric",
     branches: ui.screen === "branches" || ui.screen === "branch",
   };
-  return `<div class="desk"><aside class="desk-side"><a class="desk-brand" href="#/families" data-act="nav" data-screen="families">${daisyMark()}<span><b>Daisy</b><small>Кабинет школы</small></span></a><nav class="desk-nav">${NAV.map(([id, label, path]) => `<a href="#/${id}" class="${active[id] ? "active" : ""}" data-act="nav" data-screen="${id}">${mark(path)}${label}</a>`).join("")}</nav><div class="grow"></div><div class="desk-user"><span class="who-mark" aria-hidden="true">${esc(ui.user.slice(0, 1).toUpperCase())}</span><div class="who"><b>${esc(ui.user)}</b><button type="button" data-act="logout">Выйти</button></div></div></aside><main class="desk-main"><div class="desk-wrap">${inner}</div></main></div>${ui.toast ? `<div class="toast" role="status">${esc(ui.toast)}</div>` : ""}`;
+  return `<div class="desk"><aside class="desk-side"><a class="desk-brand" href="#/families" data-act="nav" data-screen="families">${daisyMark()}<span><b>Daisy</b><small>Кабинет школы</small></span></a><nav class="desk-nav">${NAV.map(([id, label, path]) => `<a href="#/${id}" class="${active[id] ? "active" : ""}" data-act="nav" data-screen="${id}">${mark(path)}${label}</a>`).join("")}</nav><div class="grow"></div><div class="desk-user"><span class="who-mark" aria-hidden="true">${esc(ui.user.slice(0, 1).toUpperCase())}</span><div class="who"><b>${esc(ui.user)}</b><button type="button" data-act="logout">Выйти</button><a href="./">К выбору демо</a></div></div></aside><main class="desk-main"><div class="desk-wrap">${inner}</div></main></div>${ui.toast ? `<div class="toast" role="status">${esc(ui.toast)}</div>` : ""}`;
 }
 
 function familiesPage() {
