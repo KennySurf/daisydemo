@@ -1,0 +1,2148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f2f7">
+  <title>Кабинет школы · Daisy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  color-scheme: light;
+  --bg: #f3f2f7;
+  --surface: #ffffff;
+  --surface-2: #ebe9f2;
+  --line: #e2e0ea;
+  --ink: #1b1930;
+  --ink-2: #55526a;
+  --ink-3: #8b889d;
+  --daisy: #f7c948;
+  --daisy-soft: #fdf1c9;
+  --daisy-ink: #3b2e00;
+  --ok: #1d8f53;
+  --bad: #c43d33;
+  --shadow: 0 1px 2px rgba(27, 25, 48, 0.05), 0 6px 18px rgba(27, 25, 48, 0.06);
+  --display: "Unbounded", "Onest", system-ui, sans-serif;
+  --body: "Onest", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #111018;
+    --surface: #1b1a25;
+    --surface-2: #262433;
+    --line: #2e2b3c;
+    --ink: #f2f1f8;
+    --ink-2: #b7b4c8;
+    --ink-3: #86839a;
+    --daisy: #f5c63f;
+    --daisy-soft: #3a3115;
+    --daisy-ink: #f8e7a2;
+    --ok: #45c983;
+    --bad: #f07a70;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.45;
+}
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+.d { font-family: var(--display); font-weight: 600; letter-spacing: -0.01em; }
+.muted { color: var(--ink-3); }
+.sub { color: var(--ink-2); }
+.fine { font-size: 12.5px; color: var(--ink-3); }
+.fine.bad { color: var(--bad); }
+.label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.app {
+  max-width: 440px;
+  margin: 0 auto;
+  min-height: 100%;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 600px) {
+  body { background: var(--surface-2); }
+  .app { background: var(--bg); border-inline: 1px solid var(--line); min-height: 100vh; }
+}
+.top, .subtop {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+}
+.grow { flex: 1; min-width: 0; }
+.top h2, .subtop h2 { font-size: 17px; }
+.logo { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 600; font-size: 17px; }
+.logo svg { width: 28px; height: 28px; }
+.login .logo { font-size: 22px; }
+.login .logo svg { width: 44px; height: 44px; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; position: relative;
+  flex: none; line-height: 0;
+}
+.icon-btn.ask { color: var(--daisy-ink); }
+.icon-btn.ask svg { transform: translateY(1px); width: 24px; height: 24px; stroke-width: 1.35; }
+.icon-btn.ask .ask-bubble { fill: var(--daisy); stroke: var(--daisy-ink); }
+.bell-dot {
+  position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bad); box-shadow: 0 0 0 2px var(--bg);
+}
+.li.unread b { position: relative; }
+.li.unread b::after {
+  content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 8px;
+  border-radius: 50%; background: var(--daisy); vertical-align: middle;
+}
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn:active, .kid-switch:active, .tab:active { transform: scale(0.96); }
+.kid-switch {
+  display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px;
+  border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: 14px;
+}
+.view { display: flex; flex-direction: column; gap: 16px; padding: 8px 16px 20px; }
+.page-title { font-size: 24px; padding-top: 8px; padding-bottom: 4px; line-height: 1.2; }
+.card, .list {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.card { padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.hero { display: flex; gap: 16px; align-items: center; padding: 6px 0 4px; }
+.hero .meta { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.hero h1 { font-size: 26px; line-height: 1.15; }
+.hero .sub, .hero .muted { line-height: 1.4; }
+.ph, .av {
+  display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 600;
+  background: radial-gradient(circle at 30% 25%, hsl(var(--h) 85% 82%), hsl(calc(var(--h) + 25) 55% 52%));
+}
+.ph { width: 112px; height: 112px; border-radius: 32px; font-size: 44px; }
+.portrait {
+  width: 84px; height: 84px; border-radius: 24px; flex: none; object-fit: cover;
+  display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 600; font-size: 30px;
+  background: radial-gradient(circle at 30% 25%, hsl(var(--h) 85% 78%), hsl(calc(var(--h) + 28) 55% 48%));
+}
+.person-row { flex-direction: row; align-items: center; gap: 14px; width: 100%; text-align: left; }
+.person-row > div { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.person-row h3,
+.person-row .muted,
+.person-row p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--daisy-soft);
+  color: var(--daisy-ink);
+}
+.chip.ok { background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok); }
+.chip.bad { background: color-mix(in srgb, var(--bad) 16%, var(--surface)); color: var(--bad); }
+.name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.av { width: 26px; height: 26px; border-radius: 50%; font-size: 12px; flex: none; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.big { font-family: var(--display); font-size: 19px; font-weight: 600; line-height: 1.2; }
+.schedule { display: flex; flex-direction: column; gap: 12px; }
+.schedule-head { gap: 8px; }
+.schedule-head h3 { font-size: 22px; line-height: 1.15; }
+.schedule-note { white-space: pre-line; }
+.place-line { display: flex; align-items: flex-start; gap: 8px; }
+.place-line svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+.day-mark {
+  width: 52px; flex: none; background: var(--surface-2); border-radius: 14px;
+  padding: 8px 0; text-align: center; font-family: var(--display); font-weight: 600; font-size: 16px;
+}
+.lesson-time { display: block; font-variant-numeric: tabular-nums; }
+.list { overflow: hidden; }
+.li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; width: 100%; text-align: left; }
+.li + .li { border-top: 1px solid var(--line); }
+.li small { display: block; color: var(--ink-3); font-size: 13px; }
+.chev { color: var(--ink-3); }
+.chev svg { width: 18px; height: 18px; }
+.seg { display: flex; background: var(--surface-2); border-radius: 14px; padding: 4px; gap: 4px; }
+.seg span, .seg button { flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--ink-3); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); }
+.months { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 2px 16px 4px; }
+.months::-webkit-scrollbar { display: none; }
+.mo {
+  flex: none; width: 58px; padding: 8px 0 7px; border-radius: 14px; background: var(--surface);
+  border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 3px; font-weight: 600;
+}
+.mo small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+.mo[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.mo[aria-pressed="true"] small { color: var(--bg); opacity: 0.75; }
+.mo.now { border-color: var(--daisy); border-width: 2px; }
+.program-title { font-size: 20px; }
+.program-card { gap: 8px; }
+.dir { gap: 10px; }
+.dir-head { display: flex; align-items: center; gap: 10px; }
+.dir-head h3 { font-size: 17px; }
+.dir-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 5px; }
+.dir-head .dir-dot { margin-top: 0; }
+.dir-line { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
+.dir-line b { font-weight: 600; }
+.kv { display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; font-size: 14px; }
+.kv dt { color: var(--ink-3); }
+.kv dd { margin: 0; white-space: pre-wrap; }
+.report-card {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: var(--daisy); color: var(--daisy-ink); box-shadow: none;
+  padding-right: 72px;
+}
+.report-card h3 { font-family: var(--display); font-size: 22px; line-height: 1.15; }
+.report-card p { color: var(--daisy-ink); opacity: 0.82; }
+.report-card .chip {
+  background: #1a1710; color: #f3d78a; width: fit-content; margin-bottom: 6px;
+  font-family: var(--display); font-size: 12px; font-weight: 600;
+  padding: 5px 12px; letter-spacing: 0.01em;
+}
+.report-bloom {
+  position: absolute; right: -16px; bottom: -20px; width: 96px; height: 96px;
+  pointer-events: none; z-index: 0;
+}
+.report-card > :not(.report-bloom) { position: relative; z-index: 1; }
+.report-index { display: flex; flex-direction: column; gap: 12px; }
+.report-month {
+  background: var(--surface); border-radius: 22px; padding: 16px 16px 14px;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 4px;
+}
+.report-month.new { background: var(--daisy); color: var(--daisy-ink); }
+.report-month.new .label, .report-month.new .muted { color: var(--daisy-ink); opacity: 0.72; }
+.report-month h2 { font-family: var(--display); font-size: 26px; line-height: 1.05; }
+.report { display: flex; flex-direction: column; gap: 12px; }
+.report-lead { padding: 2px 2px 0; }
+.report-lead h1 { font-size: 26px; line-height: 1.1; margin-top: 4px; }
+.report-block {
+  background: var(--surface); border-radius: 22px; padding: 16px;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px;
+}
+.report-block h4 {
+  margin: 0; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 700;
+}
+.report-block p { margin: 0; white-space: pre-wrap; }
+.report-block ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.report-block.accent { background: var(--daisy); color: var(--daisy-ink); box-shadow: none; }
+.report-block.accent h4 { color: var(--daisy-ink); opacity: 0.62; }
+.report-note { padding: 0 4px; }
+.event-list { display: flex; flex-direction: column; gap: 12px; }
+.event-card h1, .event-card h2 { font-size: 22px; line-height: 1.15; }
+.event-text { white-space: pre-wrap; }
+.event-status { font-weight: 600; }
+.event-form { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+.choice small { font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+.choice[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.choice[aria-pressed="true"] small { color: inherit; opacity: 0.72; }
+.event-past-title { font-size: 18px; padding: 4px 2px 0; }
+.head-row { display: flex; align-items: center; padding: 6px 4px 0; }
+.head-row a { font-weight: 600; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 18px; border-radius: 14px; font-weight: 600; background: var(--ink); color: var(--bg); width: 100%;
+  transition: transform 0.12s ease, filter 0.12s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+.btn.ghost { background: var(--surface-2); color: var(--ink); }
+.btn:disabled { opacity: 0.45; }
+.btn.busy:disabled { opacity: 1; cursor: progress; }
+.btn.busy::before {
+  content: "";
+  width: 15px; height: 15px; flex: none; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+.btn.done { background: var(--ok); color: #fff; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field span { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+.input { background: var(--surface-2); border: 1px solid transparent; border-radius: 12px; padding: 12px 14px; width: 100%; }
+.input:focus { outline: none; border-color: var(--ink); }
+.code { display: grid; grid-template-columns: repeat(4, 56px); gap: 10px; }
+.code input { text-align: center; font-size: 24px; font-weight: 600; padding: 12px 0; }
+.steps { display: flex; gap: 6px; }
+.steps i { height: 4px; flex: 1; border-radius: 2px; background: var(--line); }
+.steps i.on { background: var(--ink); }
+.login {
+  position: fixed; inset: 0; z-index: 70; background: var(--bg); display: flex; justify-content: center; overflow: auto;
+}
+.login .in {
+  width: min(100%, 440px); display: flex; flex-direction: column; gap: 18px; justify-content: center; min-height: 100%;
+  padding: 32px 24px;
+}
+.login h1 { font-size: 24px; line-height: 1.2; }
+.linkish { font-size: 14px; font-weight: 600; }
+.tabs {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 440px); z-index: 25;
+  background: var(--surface); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.tab { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 500; color: var(--ink-3); padding: 4px 0; position: relative; }
+.tab svg { width: 23px; height: 23px; }
+.tab.active { color: var(--ink); font-weight: 600; }
+.tab.active::before { content: ""; position: absolute; top: -6px; width: 22px; height: 3px; border-radius: 0 0 3px 3px; background: var(--daisy); }
+.overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; }
+.overlay.center { align-items: center; padding: 20px; }
+.scrim { position: absolute; inset: 0; background: rgba(20, 18, 36, 0.45); }
+.sheet {
+  position: relative; width: min(100%, 440px); background: var(--bg); border-radius: 24px 24px 0 0;
+  padding: 10px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 14px;
+}
+.grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line); align-self: center; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.people { display: flex; flex-direction: column; gap: 12px; }
+.person-sheet {
+  position: relative;
+  width: min(100%, 360px);
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 24px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  max-height: min(82vh, 640px);
+  overflow: auto;
+}
+.person-sheet-face { width: 112px; height: 112px; border-radius: 32px; font-size: 44px; }
+.person-sheet-text { white-space: pre-wrap; text-align: left; width: 100%; }
+.person-sheet-reach { font-weight: 700; color: var(--ink); }
+.video-feed { display: flex; flex-direction: column; gap: 12px; }
+.video-feed video { width: 100%; border-radius: 16px; background: #14121a; }
+.progress-feed { display: flex; flex-direction: column; gap: 14px; }
+.points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pt {
+  background: var(--surface); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.pt b { font-family: var(--display); font-size: 20px; line-height: 1.1; }
+.pt small { font-size: 12px; color: var(--ink-3); line-height: 1.3; }
+.pt.wait { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
+.pt.wait b { color: var(--ink-3); }
+.compare-card { gap: 10px; }
+.compare-card h3 { font-size: 17px; }
+.compare-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.grew {
+  flex: none; background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok);
+  font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+}
+.legend { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 18px; height: 8px; border-radius: 4px; display: inline-block; }
+.legend i.was { background: var(--line); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.legend i.now { background: var(--daisy); }
+.skill-board { gap: 0; padding: 8px 16px 14px; }
+.skill-row { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; }
+.skill-row + .skill-row { border-top: 1px solid var(--line); }
+.skill-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.skill-top b { display: block; font-size: 16px; }
+.skill-top small { display: block; margin-top: 2px; color: var(--ink-3); font-size: 13px; font-weight: 500; }
+.skill-change { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; padding-top: 2px; }
+.skill-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.skill-bar i { height: 8px; border-radius: 4px; background: var(--surface-2); }
+.skill-bar i.was { background: var(--line); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.skill-bar i.on { background: var(--daisy); box-shadow: none; }
+.skill-meaning { margin: 0; }
+.diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.diag-tile {
+  position: relative; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; color: #fff;
+  display: flex; align-items: flex-end; padding: 10px; font-weight: 600; text-align: left;
+}
+.diag-tile b { position: relative; z-index: 1; font-size: 14px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35); }
+.diag-play {
+  position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; margin: -21px 0 0 -21px;
+  border-radius: 50%; background: rgba(255, 255, 255, 0.92); color: #1b1a25;
+  display: grid; place-items: center;
+}
+.diag-play svg { width: 16px; height: 16px; margin-left: 2px; }
+.diag-tile video { position: absolute; inset: 0; width: 100%; height: 100%; background: #14121a; }
+.point-note { gap: 12px; }
+.point-note h2 { font-size: 20px; line-height: 1.2; }
+.point-note h4 {
+  margin: 0; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700;
+}
+.point-note p { margin: 4px 0 0; white-space: pre-wrap; }
+.point-note section + section { margin-top: 4px; }
+.consent-row { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+.consent-row .muted { margin-top: 4px; }
+.switch {
+  width: 48px; height: 30px; border-radius: 999px; border: 0; background: var(--surface-2); position: relative; flex: none;
+}
+.switch span {
+  position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff;
+  transition: left 0.15s ease;
+}
+.switch[aria-checked="true"] { background: var(--daisy); }
+.switch[aria-checked="true"] span { left: 21px; }
+.switch:disabled { opacity: 0.6; }
+.cal {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 16px 12px 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cal-head, .cal-title { display: flex; align-items: center; gap: 4px; }
+.cal-head { justify-content: space-between; padding: 0 6px; }
+.cal-title h2 { font-family: var(--display); font-size: 22px; line-height: 1; }
+.cal-title button { width: 28px; height: 28px; border-radius: 50%; color: var(--ink-2); font-size: 22px; line-height: 1; }
+.cal-title button:disabled { opacity: 0.28; }
+.cal-score { color: var(--ink-3); font-weight: 600; font-size: 14px; }
+.cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+.cal-week span { text-align: center; font-size: 12px; font-weight: 600; color: var(--ink-3); padding-bottom: 2px; }
+.cal-grid span, .cal-grid button {
+  aspect-ratio: 1;
+  margin: 3px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+.cal-grid .num { color: var(--ink-3); font-weight: 600; }
+.cal-grid button.wait { background: var(--surface-2); color: var(--ink-2); }
+.cal-grid button.here { background: #d9f5e4; color: #146b3a; }
+.cal-grid button.miss { background: #e24b4b; color: #fff; }
+.cal-grid button.mixed { background: var(--daisy); color: var(--daisy-ink); }
+.cal-grid button.picked { box-shadow: inset 0 0 0 2px var(--ink); }
+.cal-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 4px 0;
+  padding: 12px 12px 12px 14px;
+  border-radius: 16px;
+  background: #fde8e6;
+  color: #3a2222;
+}
+.cal-note div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cal-note small { color: #8a5a56; font-size: 13px; }
+.cal-note button {
+  margin-left: auto;
+  flex: none;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.cal-detail { display: flex; flex-direction: column; gap: 8px; scroll-margin: 16px; }
+.cal-detail > b { padding: 2px 4px 0; }
+.lesson-block {
+  background: var(--surface-2);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lesson-block p { margin: 0; }
+.lesson-block.here { background: #d9f5e4; }
+.lesson-block.miss { background: #fde8e6; }
+.lesson-block > button {
+  align-self: flex-start;
+  margin-top: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.reason-form { display: flex; flex-direction: column; gap: 10px; }
+.reason-form .seg { flex-wrap: wrap; }
+.reason-form .seg button { flex: 1 1 30%; font-size: 13px; }
+.reason-form textarea { resize: vertical; }
+.rate-form { display: flex; flex-direction: column; gap: 14px; }
+.rate-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.rate-scale button {
+  aspect-ratio: 1; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow);
+  font-family: var(--display); font-size: 22px; font-weight: 600;
+}
+.rate-scale button[aria-pressed="true"] { background: var(--daisy); color: var(--daisy-ink); box-shadow: none; }
+.rate-done { text-align: center; padding: 28px 16px; gap: 8px; }
+.rate-done .big { font-size: 56px; line-height: 1; }
+.album-grid { display: flex; flex-direction: column; gap: 12px; }
+.album-card {
+  display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center;
+  text-align: left; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); padding: 10px;
+}
+.album-card img, .album-fallback { width: 84px; height: 84px; object-fit: cover; border-radius: 16px; background: var(--surface-2); }
+.album-card b { display: block; font-size: 16px; }
+.album-card small { display: block; color: var(--ink-3); font-size: 13px; margin-top: 4px; }
+.album-open { display: flex; flex-direction: column; gap: 12px; }
+.back-text { align-self: flex-start; color: var(--ink-2); font-weight: 600; }
+.shot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.shot { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 1; background: var(--surface-2); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot-heart { position: absolute; right: 6px; bottom: 4px; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); font-size: 16px; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 40; background: rgba(16, 12, 18, 0.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;
+}
+.lightbox img { max-width: min(100%, 920px); max-height: calc(100vh - 140px); object-fit: contain; border-radius: 12px; }
+.lightbox-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 920px); color: #fff; }
+.lightbox-bar button, .lightbox-bar a { color: #fff; font-weight: 700; }
+.lightbox-bar button.loved { color: #ffd36a; }
+@media (prefers-color-scheme: dark) {
+  .cal-grid button.here { background: #163528; color: #8ee0b0; }
+  .cal-grid button.miss { background: #a33b36; color: #fff; }
+  .cal-note { background: #3a2424; color: #f6e4e2; }
+  .cal-note small { color: #d7aaa6; }
+  .lesson-block.here { background: #163528; }
+  .lesson-block.miss { background: #3a2424; }
+}
+
+.desk {
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 272px 1fr;
+  background:
+    radial-gradient(820px 380px at 88% -8%, rgba(247, 201, 72, 0.34), transparent 62%),
+    var(--bg);
+}
+.desk-side {
+  position: sticky;
+  top: 12px;
+  height: calc(100vh - 24px);
+  margin: 12px 0 12px 12px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+.desk-brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 2px; }
+.desk-brand svg { width: 40px; height: 40px; }
+.desk-brand b { display: block; font-family: var(--display); font-size: 18px; line-height: 1.1; }
+.desk-brand small { color: var(--ink-3); font-weight: 600; font-size: 12px; }
+.desk-nav { display: flex; flex-direction: column; gap: 4px; }
+.desk-nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.desk-nav a svg { width: 18px; height: 18px; flex: none; }
+.desk-nav a.active { background: var(--daisy); color: var(--daisy-ink); }
+.desk-side .grow { flex: 1; }
+.desk-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 18px;
+  background: var(--surface-2);
+}
+.who-mark {
+  width: 36px; height: 36px; border-radius: 12px; flex: none;
+  display: grid; place-items: center;
+  background: var(--ink); color: var(--daisy);
+  font-family: var(--display); font-weight: 600;
+}
+.who { min-width: 0; display: flex; flex-direction: column; }
+.who b { font-size: 14px; line-height: 1.2; }
+.who button { width: auto; padding: 0; color: var(--ink-3); font-size: 13px; font-weight: 600; text-align: left; }
+.who button:hover { color: var(--ink); }
+.desk-main { padding: 36px 36px 72px; min-width: 0; }
+.desk-wrap { max-width: 980px; }
+.desk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+.desk-head > div:has(h1) { display: flex; flex-direction: column; gap: 12px; }
+.desk-head h1 { font-size: 40px; line-height: 1.12; }
+.desk-head p { max-width: 40em; line-height: 1.5; }
+.desk-tools { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; min-width: 0; }
+.desk-tools .btn { flex: none; white-space: nowrap; }
+.desk .btn { width: auto; }
+.desk .btn.block { width: 100%; }
+.desk .btn.yellow { background: var(--daisy); color: var(--daisy-ink); }
+.search {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border-radius: 14px; padding: 0 14px;
+  box-shadow: var(--shadow); min-width: 240px;
+}
+.search svg { width: 16px; height: 16px; color: var(--ink-3); flex: none; }
+.search input { border: 0; background: transparent; padding: 12px 0; width: 100%; outline: none; }
+.desk-list { display: flex; flex-direction: column; gap: 12px; }
+.person {
+  display: grid;
+  grid-template-columns: 84px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  text-align: left;
+  width: 100%;
+  color: inherit;
+}
+.person { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.person:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(27, 25, 48, 0.08); }
+.name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.person h2 { font-family: var(--display); font-size: 22px; font-weight: 600; }
+.copy {
+  border-radius: 12px; padding: 8px 12px; font-weight: 700; font-size: 13px;
+  background: var(--daisy-soft); color: var(--daisy-ink);
+  transition: transform 0.12s ease, background-color 0.2s ease;
+}
+.copy:hover { transform: translateY(-1px); }
+.copy:active { transform: scale(0.97); }
+.copy.done { background: var(--ok); color: #fff; }
+.person .face {
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--display);
+  font-size: 28px;
+  background: radial-gradient(circle at 30% 25%, hsl(var(--h) 85% 78%), hsl(calc(var(--h) + 28) 55% 48%));
+}
+.person-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.desk-empty {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  max-width: 460px;
+}
+.desk-empty svg { width: 72px; height: 72px; }
+.desk-empty h1 { font-size: 36px; line-height: 1.12; }
+.desk-form { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+.desk-form > h1 { line-height: 1.15; padding: 6px 0 4px; }
+.attend-desk { display: flex; flex-direction: column; gap: 28px; }
+.attend-desk .desk-head { margin-bottom: 0; }
+.attend-desk .desk-empty { min-height: 0; padding: 8px 0; }
+.attend-tools { max-width: 360px; }
+.attend-desk .cal-title h2 { font-size: 28px; }
+.pass-desk { display: flex; flex-direction: column; gap: 24px; }
+.pass-desk .desk-head { margin-bottom: 0; }
+.pass-desk .cal-title h2 { font-size: 28px; }
+.pass-desk .rate-stats { margin: 0; }
+.pass-desk .desk-list { min-width: 0; }
+.pass-desk .person { width: 100%; text-align: left; cursor: pointer; }
+.pass-desk .person .face { width: 64px; height: 64px; border-radius: 18px; font-size: 22px; }
+.pass-tools { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; max-width: 640px; }
+.pass-tools .field { flex: 1; min-width: 240px; }
+.pass-tools .btn { flex: none; }
+.pass-plan-modal { width: min(100%, 560px); max-height: min(86vh, 720px); }
+.pass-plan-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.pass-plan-row {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.pass-plan-row b { display: block; }
+.pass-plan-row small { display: block; color: var(--ink-3); font-size: 13px; }
+.pass-plan-prices { display: flex; flex-direction: column; gap: 2px; font-weight: 600; color: var(--ink-2); font-size: 13px; }
+.pass-plan-form { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 8px; }
+.pass-plan-terms { display: flex; flex-direction: column; gap: 8px; }
+.pass-plan-term { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+.pass-plan-term:not(:has(.pass-plan-drop)) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.pass-plan-drop {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-3);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pass-plan-add {
+  align-self: flex-start;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink-3);
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 720px) {
+  .pass-plan-term,
+  .pass-plan-term:not(:has(.pass-plan-drop)) { grid-template-columns: 1fr; }
+}
+.reg-scroll {
+  overflow-x: auto;
+  background: var(--surface);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+.reg { width: 100%; border-collapse: separate; border-spacing: 0; }
+.reg th, .reg td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.reg thead th { text-align: center; background: var(--surface-2); }
+.reg thead tr:first-child th { border-bottom: 0; padding-bottom: 6px; }
+.reg thead .reg-slot { padding-top: 4px; font-weight: 600; }
+.reg .reg-day { border-left: 2px solid var(--ink); }
+.reg .reg-name,
+.reg tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  text-align: left;
+  min-width: 148px;
+}
+.reg .reg-name { background: var(--surface-2); vertical-align: bottom; }
+.reg .reg-name.reg-slot { vertical-align: middle; }
+.reg tbody th { background: var(--surface); font-weight: 700; }
+.reg-date { display: flex; flex-direction: column; align-items: center; gap: 1px; line-height: 1.2; }
+.reg-date b { font-family: var(--display); font-size: 18px; }
+.reg-date small { color: var(--ink-3); font-weight: 600; max-width: 96px; }
+.reg-all { display: block; margin: 8px auto 0; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+.reg-all:disabled { opacity: 0.4; }
+.reg-split { display: inline-flex; border-radius: 10px; overflow: hidden; background: var(--surface-2); }
+.reg-split button { padding: 8px 9px; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.reg-split button.here[aria-pressed="true"] { background: #d9f5e4; color: #146b3a; }
+.reg-split button.miss[aria-pressed="true"] { background: #e24b4b; color: #fff; }
+.reg-split button:disabled { opacity: 0.55; }
+.reg-gaps { display: flex; flex-direction: column; gap: 10px; }
+.reg-gaps h2 { font-size: 22px; }
+.reg-gaps article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+.reg-gaps .mark-pair { display: flex; gap: 6px; flex: none; }
+.reg-gaps .mark-pair button {
+  border: 0; background: var(--surface-2); color: var(--ink-2); border-radius: 12px; padding: 8px 12px; font-weight: 700;
+}
+.reg-gaps .mark-pair button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+@media (prefers-color-scheme: dark) {
+  .reg-split button.here[aria-pressed="true"] { background: #163528; color: #8ee0b0; }
+  .reg-split button.miss[aria-pressed="true"] { background: #a33b36; color: #fff; }
+}
+.video-desk { display: flex; flex-direction: column; gap: 28px; }
+.video-desk .desk-head { margin-bottom: 0; }
+.video-desk .list, .video-desk .desk-empty { max-width: 560px; }
+.video-desk .desk-empty { min-height: 0; padding: 12px 0; }
+.video-watch { display: flex; flex-direction: column; gap: 10px; max-width: 560px; }
+.video-watch h2 { font-size: 28px; line-height: 1.15; }
+.video-watch video { width: 100%; max-height: 62vh; border-radius: 18px; background: #14121a; }
+.drop {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 148px;
+  padding: 22px 20px;
+  border-radius: 22px;
+  border: 1.5px dashed var(--line);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.drop:hover, .drop.over { border-color: var(--daisy); background: color-mix(in srgb, var(--daisy) 16%, var(--surface)); }
+.drop.has { border-style: solid; }
+.drop b { font-size: 16px; }
+.drop small { color: var(--ink-3); font-size: 13px; max-width: 28em; }
+.drop input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+  z-index: 1;
+}
+.kind-pair { display: flex; gap: 8px; }
+.kind-pair button {
+  border: 0; background: var(--surface-2); color: var(--ink-2); border-radius: 12px; padding: 8px 14px; font-weight: 700;
+}
+.kind-pair button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.album-open-btn { flex: 1; min-width: 0; text-align: left; }
+.album-desk { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+.album-desk h2 { line-height: 1.15; }
+.photo-tray {
+  position: relative;
+  height: clamp(240px, 46vh, 520px);
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+.photo-tray.empty { cursor: pointer; }
+.photo-tray.over { box-shadow: inset 0 0 0 2px var(--daisy), var(--shadow); }
+.photo-tray-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.photo-tray-empty {
+  margin: auto;
+  color: var(--ink-3);
+  text-align: center;
+  max-width: 16em;
+}
+.photo-tray-note { grid-column: 1 / -1; margin: 0; color: var(--ink-3); }
+.album-desk .shot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; align-content: start; }
+.album-desk figure { position: relative; margin: 0; }
+.shot-open { display: block; width: 100%; }
+.album-desk img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 16px; background: var(--surface-2); }
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(16, 12, 18, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+.photo-modal-card {
+  width: min(100%, 420px);
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.photo-modal-card img { width: 100%; max-height: 62vh; object-fit: contain; border-radius: 16px; background: var(--surface-2); }
+.photo-modal-bar { display: flex; justify-content: space-between; gap: 12px; }
+.photo-modal-bar button { font-weight: 700; color: var(--ink-2); }
+.photo-modal-bar button.danger { color: var(--bad); }
+.shot-x {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e24b4b;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+.shot-x:disabled { opacity: 0.7; }
+.back-link { font-weight: 600; color: var(--ink-2); }
+.invite {
+  background: var(--daisy);
+  color: var(--daisy-ink);
+  border-radius: 24px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.invite .label { color: var(--daisy-ink); opacity: 0.72; }
+.pill { display: inline-flex; align-items: center; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+.pill.ok { background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok); }
+.pill.warn { background: #fdebd0; color: #a96300; }
+.pill.soft { background: var(--surface-2); color: var(--ink-2); }
+.btn.sm { padding: 9px 12px; border-radius: 12px; font-size: 14px; }
+textarea.input { min-height: 96px; resize: vertical; }
+.field:has(.select.open) { position: relative; z-index: 30; }
+.field:has(.select.open) ~ .field :is(input[type="date"], input[type="month"], input[type="time"], input[type="datetime-local"]) {
+  visibility: hidden;
+}
+.select { position: relative; }
+.select.open { z-index: 30; }
+.select-face {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.select-face span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.select-face.placeholder span { color: var(--ink-3); }
+.select-face i {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ink-3);
+  border-bottom: 2px solid var(--ink-3);
+  transform: translateY(-2px) rotate(45deg);
+  flex: none;
+}
+.select.open .select-face { border-color: var(--ink); }
+.select.open .select-face i { transform: translateY(2px) rotate(225deg); }
+.select-list {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 16px;
+  box-shadow: var(--shadow), 0 0 0 1px var(--line);
+  max-height: 280px;
+  overflow: auto;
+}
+.select-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.select-list button.on {
+  background: var(--daisy);
+  color: var(--daisy-ink);
+}
+.invite .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.invite .btn { background: var(--daisy-ink); color: var(--daisy); }
+.invite .btn.ghost { background: transparent; color: var(--daisy-ink); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--daisy-ink) 40%, transparent); }
+.child-block {
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.child-block header { display: flex; justify-content: space-between; align-items: center; }
+.signup-row { display: flex; align-items: center; gap: 10px; padding-top: 8px; }
+.signup-row small { display: block; color: var(--ink-3); font-size: 13px; }
+.fold {
+  background: var(--surface);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.fold-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px;
+  text-align: left;
+}
+.fold-head b { flex: 1; font-size: 16px; }
+.fold-mark {
+  width: 10px; height: 10px; flex: none;
+  border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3);
+  transform: rotate(45deg); margin-top: -4px;
+  transition: transform 0.15s ease;
+}
+.fold-head[aria-expanded="true"] .fold-mark { transform: rotate(225deg); margin-top: 4px; }
+.fold-body { display: flex; flex-direction: column; gap: 12px; padding: 0 16px 16px; }
+.lesson-slot { display: flex; flex-direction: column; gap: 10px; }
+.lesson-slot + .lesson-slot { border-top: 1px solid var(--line); padding-top: 12px; }
+.lesson-slot .slot-head { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+.suggest { display: flex; flex-wrap: wrap; gap: 8px; }
+.suggest button {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-weight: 600;
+  font-size: 14px;
+}
+.suggest button:hover { border-color: var(--ink-3); }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.week button {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-weight: 700;
+}
+.week button[aria-pressed="true"] { background: var(--daisy); border-color: var(--daisy); color: var(--daisy-ink); }
+.week button[aria-expanded="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.row-actions .btn { width: auto; }
+.mark-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.mark-row small { display: block; color: var(--ink-3); font-weight: 500; font-size: 12px; }
+.mark-pick { display: flex; gap: 4px; flex: none; }
+.mark-pick button {
+  width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface); font-weight: 700;
+}
+.mark-pick button[aria-pressed="true"] { background: var(--daisy); border-color: var(--daisy); color: var(--daisy-ink); }
+.clip-row { display: flex; align-items: center; gap: 10px; }
+.clip-row .btn { width: auto; position: relative; overflow: hidden; }
+.clip-row input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.clip-row small { color: var(--ink-3); }
+.text-btn { color: var(--ink-3); font-weight: 600; font-size: 14px; }
+.text-btn:hover { color: var(--ink); }
+.people-board { display: flex; flex-direction: column; gap: 16px; }
+.people-block {
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.people-block header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.people-block header h2 { font-size: 28px; line-height: 1.15; }
+.people-block .btn { flex: none; }
+.people-block .place { background: var(--bg); box-shadow: none; }
+.place.with-face { flex-direction: row; align-items: center; gap: 14px; min-height: 0; }
+.place.with-face .grow { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+.place.with-face h2 { font-size: 22px; }
+.place.with-face h2,
+.place.with-face .sub,
+.place.with-face .chip {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.people-block .portrait { width: 92px; height: 92px; border-radius: 26px; font-size: 32px; }
+.photo-field { display: flex; align-items: center; gap: 14px; }
+.photo-face { position: relative; width: 92px; height: 92px; flex: none; }
+.photo-face .portrait { width: 100%; height: 100%; }
+.photo-clear {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(27, 25, 48, 0.12);
+  display: grid;
+  place-items: center;
+}
+.photo-clear svg { width: 13px; height: 13px; }
+.photo-clear:hover { color: var(--ink); }
+.photo-clear:disabled { opacity: 0.5; }
+.photo-pick { width: auto; position: relative; overflow: hidden; }
+.photo-pick input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.people-empty { max-width: 36em; }
+.place-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.place {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  min-height: 150px;
+}
+.place { transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.place:hover { transform: translateY(-2px); }
+.place:active { transform: scale(0.98); }
+.place h2 { font-family: var(--display); font-size: 22px; }
+.desk-nav a { transition: background-color 0.15s ease, color 0.15s ease, transform 0.12s ease; }
+.desk-nav a:active { transform: scale(0.98); }
+.desk-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(700px 320px at 50% 0%, rgba(247, 201, 72, 0.45), transparent 55%),
+    var(--bg);
+}
+.desk-login-card {
+  width: min(100%, 420px);
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.desk-login-card .logo svg { width: 42px; height: 42px; }
+.desk-login-card h1 { font-size: 32px; line-height: 1.15; padding: 4px 0 2px; }
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+  z-index: 40;
+  animation: toast-in 0.22s ease;
+}
+@keyframes toast-in {
+  from { transform: translate(-50%, 10px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+.rate-desk { display: flex; flex-direction: column; gap: 24px; }
+.rate-desk .desk-head { margin-bottom: 0; }
+.rate-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.rate-stats .card { background: var(--surface); border-radius: 22px; padding: 16px; box-shadow: var(--shadow); }
+.rate-stats b { display: block; font-family: var(--display); font-size: 28px; margin-top: 6px; }
+.rate-desk, .rate-tasks, .rate-feed, .desk-list { min-width: 0; }
+.rate-tasks, .rate-feed { display: flex; flex-direction: column; gap: 12px; }
+.rate-tasks header, .rate-feed header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.rate-tasks h2, .rate-feed h2 { font-size: 22px; }
+.rate-task-nav { display: flex; align-items: center; gap: 12px; }
+.rate-task-nav .cal-title span { font-weight: 600; color: var(--ink-2); min-width: 4.2em; text-align: center; font-variant-numeric: tabular-nums; }
+.rate-task-deck {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+}
+.rate-task-deck::-webkit-scrollbar { display: none; }
+.rate-task {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+  box-sizing: border-box;
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: var(--surface);
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.rate-task > div { min-width: 0; overflow: hidden; }
+.rate-task .row-actions { min-width: 0; }
+.rate-task h3 { font-family: var(--display); font-size: 20px; margin: 8px 0 4px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.rate-row { grid-template-columns: 64px minmax(0, 1fr) auto; overflow: hidden; }
+.rate-row > div { min-width: 0; overflow: hidden; }
+.rate-row h2 { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.rate-clip {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+  margin: 4px 0 0;
+}
+.rate-mark {
+  width: 64px; height: 64px; border-radius: 20px;
+  display: grid; place-items: center;
+  font-family: var(--display); font-size: 26px; font-weight: 600;
+  background: var(--daisy-soft); color: var(--daisy-ink);
+}
+.rate-mark.low { background: color-mix(in srgb, var(--bad) 16%, var(--surface)); color: var(--bad); }
+.rate-modal {
+  width: min(100%, 440px);
+  max-height: min(82vh, 640px);
+  overflow: auto;
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 24px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.rate-modal .rate-mark { margin-bottom: 4px; }
+.rate-modal h2 { font-size: 26px; line-height: 1.15; }
+.rate-modal-phone { font-weight: 700; }
+.rate-modal-text { white-space: pre-wrap; margin: 8px 0 4px; }
+.rate-modal .row-actions { margin-top: 10px; }
+@media (max-width: 860px) {
+  .desk { display: block; }
+  .desk-side {
+    position: sticky;
+    top: 0;
+    height: auto;
+    z-index: 20;
+    margin: 0;
+    border-radius: 0 0 22px 22px;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .desk-nav { flex-direction: row; overflow: auto; flex: 1; }
+  .desk-nav a { white-space: nowrap; padding: 8px 10px; }
+  .desk-user { padding: 4px; }
+  .who b { display: none; }
+  .desk-tools { width: 100%; flex-wrap: nowrap; }
+  .search { min-width: 0; flex: 1; }
+  .desk-head, .people-block header { flex-direction: column; align-items: stretch; }
+  .desk-main { padding: 24px 14px 40px; }
+  .person { grid-template-columns: 64px 1fr; }
+  .person .face { width: 64px; height: 64px; border-radius: 18px; font-size: 22px; }
+  .person-actions { grid-column: 1 / -1; flex-direction: row; align-items: center; }
+  .rate-stats { grid-template-columns: 1fr; }
+  .rate-task { grid-template-columns: minmax(0, 1fr); }
+  .rate-row { grid-template-columns: 56px minmax(0, 1fr) auto; }
+}
+
+html, body, #root { min-height: 100%; }
+.desk { min-height: 100vh; }
+.fake-video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 16px;
+  background: #14121a;
+  color: #f4f1ea;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 16px;
+}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+const NAV = [
+  ["families", "Семьи", "M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M20 21v-2a3.5 3.5 0 0 0-2.6-3.4M16.5 3.1a4 4 0 0 1 0 7.8"],
+  ["groups", "Группы", "M4 7h16M4 12h16M4 17h10"],
+  ["attendance", "Посещаемость", "M7 3v3M17 3v3M4 8h16M6 4h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"],
+  ["programs", "Программа", "M4 5h12a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V5zM4 18a3 3 0 0 1 3-3h12"],
+  ["reports", "Отчёты", "M7 3h8l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1M14 3v5h5"],
+  ["videos", "Видео", "M8 5.5v13l11-6.5z"],
+  ["gallery", "Галерея", "M4 6h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13l2.2-2.2a1 1 0 0 1 1.4 0L14 13l1.3-1.3a1 1 0 0 1 1.4 0L19 14M8.5 10a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4"],
+  ["events", "Мероприятия", "M4 5h16a2 2 0 0 1 2 2v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a2 2 0 0 1 2-2zM4 10h16M8 3v4M16 3v4"],
+  ["teachers", "Педагоги", "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"],
+  ["ratings", "Оценка", "M12 17.3 7.1 20l.9-5.6L4 10.5l5.6-.8L12 4.8l2.4 4.9 5.6.8-3.9 3.9.9 5.6z"],
+  ["passes", "Абонемент", "M4 8h16v12H4zM8 8V6a4 4 0 0 1 8 0v2"],
+  ["points", "Прогресс", "M4 20V10M10 20V4M16 20v-7M21 20H3"],
+  ["branches", "Филиалы", "M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11M12 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"],
+];
+const STATUS = { waiting: ["Ждёт родителя", "warn"], entered: ["В кабинете", "ok"], none: ["Без ссылки", "soft"] };
+const SUGGESTED = ["Дефиле", "Фото", "Актёрское мастерство", "Класс коммуникаций"];
+const KINDS = { battle: "Батл", show: "Шоу", photoshoot: "Фотосессия", project: "Проект" };
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+function hue(name) {
+  let value = 0;
+  for (const char of name) value = (value * 33 + char.charCodeAt(0)) % 360;
+  return value;
+}
+function daisyMark() {
+  const petals = [0, 45, 90, 135, 180, 225, 270, 315].map((angle) => `<ellipse cx="20" cy="9" rx="5" ry="8.5" fill="var(--surface)" stroke="var(--line)" stroke-width="1" transform="rotate(${angle} 20 20)"/>`).join("");
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">${petals}<circle cx="20" cy="20" r="6.5" fill="var(--daisy)"/></svg>`;
+}
+function mark(d) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+function countLabel(count, one, few, many) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  const word = mod10 === 1 && mod100 !== 11 ? one : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? few : many;
+  return `${count} ${word}`;
+}
+function prettyPhone(phone) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) {
+    const rest = digits.slice(1);
+    return `+7 ${rest.slice(0, 3)} ${rest.slice(3, 6)}-${rest.slice(6, 8)}-${rest.slice(8)}`;
+  }
+  return phone;
+}
+function money(value) {
+  if (value === 0) return "бесплатно";
+  return `${value.toLocaleString("ru-RU")} ₽`;
+}
+function monthsLabel(count) {
+  const ten = count % 10;
+  const hundred = count % 100;
+  if (ten === 1 && hundred !== 11) return `${count} месяц`;
+  if (ten >= 2 && ten <= 4 && (hundred < 12 || hundred > 14)) return `${count} месяца`;
+  return `${count} месяцев`;
+}
+function dateLabel(iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+}
+function pad(n) { return String(n).padStart(2, "0"); }
+function nid(prefix) { return `${prefix}${Math.random().toString(36).slice(2, 8)}`; }
+function shotUrl(h, letter) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><defs><radialGradient id="g" cx="30%" cy="25%"><stop offset="0%" stop-color="hsl(${h} 85% 78%)"/><stop offset="100%" stop-color="hsl(${(h + 28) % 360} 55% 46%)"/></radialGradient></defs><rect width="640" height="640" fill="url(#g)"/><text x="320" y="360" text-anchor="middle" font-size="140" font-family="sans-serif" fill="white">${letter}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+const db = {
+  branches: [
+    { id: "b1", name: "Центр", address: "ул. Кирова, 18" },
+    { id: "b2", name: "Север", address: "ул. Победы, 4" },
+  ],
+  groups: [
+    { id: "g1", name: "Ромашки", branch_id: "b1", age_label: "10–12 лет", schedule_note: "", lessons: [{ weekday: 1, starts_at: "16:00", title: "Дефиле" }, { weekday: 3, starts_at: "16:00", title: "Актёрское мастерство" }] },
+    { id: "g2", name: "Подсолнухи", branch_id: "b1", age_label: "7–9 лет", schedule_note: "", lessons: [{ weekday: 5, starts_at: "11:00", title: "Визитка" }] },
+  ],
+  families: [
+    { id: "f1", display_name: "Ивановы", phone: "+79120000000", status: "entered", invite: { token: "ivanovy", link: "http://localhost:5173/i/ivanovy" }, children: [{ id: "c-sofia", first_name: "София", last_name: "Иванова", group_id: "g1", birth_date: "2015-04-12" }, { id: "c-mark", first_name: "Марк", last_name: "Иванов", group_id: "g2", birth_date: "2018-09-03" }] },
+    { id: "f2", display_name: "Петровы", phone: "+79031112233", status: "waiting", invite: { token: "petrovy", link: "http://localhost:5173/i/petrovy" }, children: [{ id: "c-lera", first_name: "Лера", last_name: "Петрова", group_id: "g1", birth_date: "2014-11-20" }] },
+  ],
+  programs: [
+    { id: "p1", group_id: "g1", year: 2026, month: 11, filled: true, directions: [{ name: "Дефиле", topics: "поворот и пауза", goal: "Спокойный выход от кулисы до точки", can_do: "Повторить связку без счёта вслух" }, { name: "Фото", topics: "серия из трёх кадров", goal: "Понять, куда смотреть в кадре", can_do: "Собрать серию по команде фотографа" }, { name: "Актёрское мастерство", topics: "диалог на двоих", goal: "Договаривать фразу до конца", can_do: "Сыграть короткий этюд с партнёром" }, { name: "Класс коммуникаций", topics: "говорить по очереди", goal: "Слышать очередь и отвечать по делу", can_do: "Представиться и задать один вопрос" }] },
+    { id: "p2", group_id: "g2", year: 2026, month: 11, filled: true, directions: [{ name: "Дефиле", topics: "стойка", goal: "Достоять до конца счёта", can_do: "Поклон без подсказки" }] },
+  ],
+  reports: [
+    { id: "r1", group_id: "g1", year: 2026, month: 11, sent: false, studied: "Поворот и пауза в конце дорожки\nСерия из трёх кадров\nДиалог на двоих", focus: "Длина шага под музыку", homework: "Пройти дорожку и остановиться на счёт четыре.", lines: { "c-sofia": "София сама ловит паузу перед финальным кадром.", "c-lera": "Лера держит взгляд, но торопит шаг." } },
+  ],
+  videos: [{ id: "v1", group_id: "g1", date: "2026-11-12", name: "ромашки-12.11.mp4" }],
+  albums: [
+    { id: "a1", kind: "group", group_id: "g1", child_id: "", title: "Группа «Ромашки», ноябрь", date: "2026-11-19", photos: [{ id: "ph1", url: shotUrl(330, "С") }, { id: "ph2", url: shotUrl(18, "Л") }] },
+    { id: "a2", kind: "personal", group_id: "", child_id: "c-sofia", title: "Фотосессия Софии", date: "2026-10-02", photos: [{ id: "ph3", url: shotUrl(28, "С") }] },
+  ],
+  events: [
+    { id: "e1", kind: "battle", title: "Открытый батл", date: "2026-12-12", starts_at: "12:00", place: "Филиал Центр", price: 1500, scope: "group", group_id: "g1", branch_id: "", description: "Короткий выход на сцену. Состав собирает школа после заявок.", requests: [{ id: "req1", child_id: "c-sofia", status: "requested", note: "" }] },
+    { id: "e2", kind: "show", title: "Зимнее шоу", date: "2026-12-20", starts_at: "17:00", place: "Филиал Центр", price: 0, scope: "branch", group_id: "", branch_id: "b1", description: "Общий выход младших групп.", requests: [] },
+  ],
+  teachers: [
+    { id: "t1", name: "Алина Соколова", teaches: "Дефиле", about: "Ведёт дефиле в «Ромашках» и «Подсолнухах».", groups: ["g1", "g2"] },
+    { id: "t2", name: "Марк Левин", teaches: "Актёрское мастерство", about: "Разбирает этюды и помогает говорить громче.", groups: ["g1"] },
+  ],
+  contacts: [
+    { id: "k1", name: "Администратор филиала", reach: "+7 343 200-00-11", topics: "Расписание, пропуски, оплата и запись на мероприятия." },
+    { id: "k2", name: "Методист Daisy", reach: "metodist@daisy.demo", topics: "Программа месяца, отчёты и точки прогресса." },
+  ],
+  ratings: [
+    { id: "rt1", family_id: "f2", family: "Петровы", phone: "+79031112233", place: "Ромашки · Центр", score: 5, comment: "Мало понятно, когда отчёт.", submitted_at: "2026-11-20T18:10:00", low: true, task_open: true },
+    { id: "rt2", family_id: "f1", family: "Ивановы", phone: "+79120000000", place: "Ромашки · Центр", score: 9, comment: "Софии нравится дефиле.", submitted_at: "2026-11-22T09:40:00", low: false, task_open: false },
+  ],
+  passes: {
+    g1: { "c-sofia": { paid: false, due_on: "2026-12-05", lessons_note: "8 занятий" }, "c-lera": { paid: true, due_on: "", lessons_note: "8 занятий" } },
+    g2: { "c-mark": { paid: true, due_on: "", lessons_note: "4 занятия" } },
+  },
+  plans: {
+    g1: [{ id: "pl1", name: "8 занятий", details: "2 раза в неделю", terms: [{ months: 1, price: 6400 }, { months: 3, price: 18000 }] }],
+    g2: [{ id: "pl2", name: "4 занятия", details: "раз в неделю", terms: [{ months: 1, price: 4200 }] }],
+  },
+  passRequests: [{ id: "pr1", child_id: "c-sofia", group_id: "g1", plan_name: "8 занятий", months: 3, amount: 18000, status: "requested" }],
+  points: [
+    { id: "pt1", group_id: "g1", code: "A", season: "2026/2027", date: "2026-09-12", sent: true, scores: { "c-sofia": { posture: 2, step: 1, look: 2, speech: 1 }, "c-lera": { posture: 2, step: 2, look: 1, speech: 2 } } },
+    { id: "pt2", group_id: "g1", code: "B", season: "2026/2027", date: "2026-11-21", sent: false, scores: { "c-sofia": { posture: 3, step: 2, look: 2, speech: 2 }, "c-lera": { posture: 2, step: 2, look: 2, speech: 2 } } },
+  ],
+  skills: [
+    { code: "posture", name: "Осанка" },
+    { code: "step", name: "Шаг" },
+    { code: "look", name: "Взгляд" },
+    { code: "speech", name: "Речь" },
+  ],
+  marks: {},
+};
+
+(function seedMarks() {
+  const kids = { g1: ["c-sofia", "c-lera"], g2: ["c-mark"] };
+  const slots = { g1: [{ dow: 2, at: "16:00", title: "Дефиле" }, { dow: 4, at: "16:00", title: "Актёрское мастерство" }], g2: [{ dow: 6, at: "11:00", title: "Визитка" }] };
+  for (const gid of ["g1", "g2"]) {
+    for (let day = 1; day <= 30; day += 1) {
+      const date = new Date(2026, 10, day);
+      const iso = `2026-11-${pad(day)}`;
+      const slot = slots[gid].find((item) => item.dow === date.getDay());
+      if (!slot) continue;
+      for (const child of kids[gid]) {
+        const key = `${child}|${iso}|${slot.at}`;
+        let present = iso < "2026-11-27" ? true : null;
+        let reason = "";
+        let note = "";
+        let decision = "";
+        if (child === "c-sofia" && iso === "2026-11-24") {
+          present = false;
+          reason = "Болезнь";
+          note = "Температура, осталась дома";
+        }
+        db.marks[key] = { present, reason, note, decision, title: slot.title };
+      }
+    }
+  }
+}());
+
+const ui = {
+  loggedIn: true,
+  user: "admin",
+  screen: "families",
+  id: "",
+  query: "",
+  toast: "",
+  copied: "",
+  select: "",
+  loginUser: "",
+  loginPass: "",
+  loginError: "",
+  groupId: "g1",
+  month: 11,
+  year: 2026,
+  showPaid: false,
+  passDraft: null,
+  plansOpen: false,
+  videoFile: "",
+  videoDate: "",
+  albumKind: "group",
+  albumTitle: "",
+  albumDate: "",
+  albumOpen: "",
+  preview: "",
+  eventNote: "",
+  ratePicked: "",
+  form: {},
+};
+
+function branchOf(id) { return db.branches.find((item) => item.id === id); }
+function groupOf(id) { return db.groups.find((item) => item.id === id); }
+function childOf(id) {
+  for (const family of db.families) {
+    const child = family.children.find((item) => item.id === id);
+    if (child) return { ...child, family };
+  }
+  return null;
+}
+function kidsIn(groupId) {
+  return db.families.flatMap((family) => family.children.filter((child) => child.group_id === groupId).map((child) => ({ ...child, family })));
+}
+function groupPlace(group) {
+  return `${group.name} · ${branchOf(group.branch_id)?.name || ""}`;
+}
+function titleOf(family) {
+  const names = family.children.map((child) => child.first_name).filter(Boolean);
+  return names.length ? names.join(", ") : family.display_name || "Семья";
+}
+function placeOf(family) {
+  const child = family.children.find((item) => item.group_id) || family.children[0];
+  if (!child) return "Ребёнок ещё не добавлен";
+  const group = groupOf(child.group_id);
+  return group ? [group.name, group.age_label, branchOf(group.branch_id)?.name].filter(Boolean).join(" · ") : "Группа не выбрана";
+}
+function notify(text) {
+  ui.toast = text;
+  window.clearTimeout(notify.timer);
+  notify.timer = window.setTimeout(() => { ui.toast = ""; render(); }, 2800);
+}
+
+function currentHash() {
+  if (!ui.loggedIn) return "#/login";
+  if (ui.screen === "family") return `#/families/${ui.id || "new"}`;
+  if (ui.screen === "group") return `#/groups/${ui.id || "new"}`;
+  if (ui.screen === "program") return `#/programs/${ui.id || "new"}`;
+  if (ui.screen === "report") return `#/reports/${ui.id || "new"}`;
+  if (ui.screen === "event") return `#/events/${ui.id || "new"}`;
+  if (ui.screen === "teacher") return `#/teachers/${ui.id || "new"}`;
+  if (ui.screen === "contact") return `#/contacts/${ui.id || "new"}`;
+  if (ui.screen === "point") return `#/points/${ui.id || "new"}`;
+  if (ui.screen === "rubric") return "#/points/rubric";
+  if (ui.screen === "branch") return `#/branches/${ui.id || "new"}`;
+  return `#/${ui.screen}`;
+}
+function applyHash() {
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  if (parts[0] === "login" || !ui.loggedIn) {
+    ui.loggedIn = parts[0] === "login" ? false : ui.loggedIn;
+    if (!ui.loggedIn) { ui.screen = "login"; return; }
+  }
+  const [a, b] = parts;
+  ui.screen = a || "families";
+  ui.id = b || "";
+  ui.select = "";
+  if (a === "families" && b) ui.screen = "family";
+  if (a === "groups" && b) ui.screen = "group";
+  if (a === "programs" && b) ui.screen = "program";
+  if (a === "reports" && b) ui.screen = "report";
+  if (a === "events" && b) ui.screen = "event";
+  if (a === "teachers" && b) ui.screen = "teacher";
+  if (a === "contacts" && b) ui.screen = "contact";
+  if (a === "points" && b === "rubric") ui.screen = "rubric";
+  else if (a === "points" && b) ui.screen = "point";
+  if (a === "branches" && b) ui.screen = "branch";
+  if (ui.screen === "family" && b && b !== "new") loadFamily(b);
+  if (ui.screen === "group" && b && b !== "new") loadGroup(b);
+}
+function go(screen, id = "") {
+  ui.screen = screen;
+  ui.id = id;
+  ui.select = "";
+  const next = currentHash();
+  if (location.hash !== next) history.pushState({ demo: 1 }, "", next);
+  render();
+}
+
+function loadFamily(id) {
+  const family = db.families.find((item) => item.id === id);
+  ui.form = family
+    ? { phone: prettyPhone(family.phone), display_name: family.display_name, children: family.children.map((child) => ({ ...child })) }
+    : { phone: "", display_name: "", children: [{ id: nid("c"), first_name: "", last_name: "", group_id: "", birth_date: "" }] };
+}
+function loadGroup(id) {
+  const group = groupOf(id);
+  ui.form = group
+    ? { ...group, openDay: null, slots: group.lessons.map((lesson) => ({ ...lesson, id: nid("s") })) }
+    : { name: "", branch_id: db.branches[0]?.id || "", age_label: "", schedule_note: "", openDay: null, slots: [] };
+}
+
+function selectBox(name, value, options, placeholder) {
+  const open = ui.select === name;
+  const chosen = options.find((item) => item.value === value);
+  return `<div class="select${open ? " open" : ""}"><button type="button" class="input select-face${chosen ? "" : " placeholder"}" data-act="select-toggle" data-name="${name}"><span>${chosen ? esc(chosen.label) : esc(placeholder)}</span><i></i></button>${open ? `<ul class="select-list">${[{ value: "", label: placeholder }, ...options].map((item) => `<li><button type="button" class="${item.value === value ? "on" : ""}" data-act="select" data-name="${name}" data-value="${esc(item.value)}">${esc(item.label)}</button></li>`).join("")}</ul>` : ""}</div>`;
+}
+
+function loginScreen() {
+  return `<div class="desk-login"><form class="desk-login-card" data-act="stop"><div class="logo">${daisyMark()}<span>Daisy</span></div><h1 class="d">Кабинет школы</h1><p class="sub">Семьи, группы и филиалы в одном месте.</p><label class="field"><span>Логин</span><input class="input" id="login-user" autocomplete="username" value="${esc(ui.loginUser)}"></label><label class="field"><span>Пароль</span><input class="input" id="login-pass" type="password" autocomplete="current-password" value="${esc(ui.loginPass)}"></label>${ui.loginError ? `<p class="fine bad">${esc(ui.loginError)}</p>` : ""}<button class="btn block" type="button" data-act="login">Войти</button><p class="fine">Локальный вход: admin / daisy-local. В этой демке сервер не проверяет пароль: подойдут эти или любые непустые.</p></form></div>`;
+}
+
+function shell(inner) {
+  const active = {
+    families: ui.screen === "families" || ui.screen === "family",
+    groups: ui.screen === "groups" || ui.screen === "group",
+    attendance: ui.screen === "attendance",
+    programs: ui.screen === "programs" || ui.screen === "program",
+    reports: ui.screen === "reports" || ui.screen === "report",
+    videos: ui.screen === "videos",
+    gallery: ui.screen === "gallery",
+    events: ui.screen === "events" || ui.screen === "event",
+    teachers: ui.screen === "teachers" || ui.screen === "teacher" || ui.screen === "contact",
+    ratings: ui.screen === "ratings",
+    passes: ui.screen === "passes",
+    points: ui.screen === "points" || ui.screen === "point" || ui.screen === "rubric",
+    branches: ui.screen === "branches" || ui.screen === "branch",
+  };
+  return `<div class="desk"><aside class="desk-side"><a class="desk-brand" href="#/families" data-act="nav" data-screen="families">${daisyMark()}<span><b>Daisy</b><small>Кабинет школы</small></span></a><nav class="desk-nav">${NAV.map(([id, label, path]) => `<a href="#/${id}" class="${active[id] ? "active" : ""}" data-act="nav" data-screen="${id}">${mark(path)}${label}</a>`).join("")}</nav><div class="grow"></div><div class="desk-user"><span class="who-mark" aria-hidden="true">${esc(ui.user.slice(0, 1).toUpperCase())}</span><div class="who"><b>${esc(ui.user)}</b><button type="button" data-act="logout">Выйти</button></div></div></aside><main class="desk-main"><div class="desk-wrap">${inner}</div></main></div>${ui.toast ? `<div class="toast" role="status">${esc(ui.toast)}</div>` : ""}`;
+}
+
+function familiesPage() {
+  const needle = ui.query.trim().toLowerCase();
+  const visible = db.families.filter((family) => !needle || [titleOf(family), family.display_name, family.phone, placeOf(family)].join(" ").toLowerCase().includes(needle));
+  return `<header class="desk-head"><div><h1 class="d">Семьи</h1><p class="muted">Дети школы и их родители</p></div><div class="desk-tools"><label class="search">${mark("M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16M21 21l-4.3-4.3")}<input id="search" placeholder="Имя, телефон, группа" value="${esc(ui.query)}"></label><a class="btn yellow" href="#/families/new" data-act="nav" data-screen="family" data-id="new">Новая семья</a></div></header><div class="desk-list">${visible.map((family) => {
+    const [label, kind] = STATUS[family.status];
+    const name = titleOf(family);
+    return `<article class="person"><a href="#/families/${family.id}" class="face" style="--h:${hue(name)}" data-act="nav" data-screen="family" data-id="${family.id}">${esc(name.slice(0, 1))}</a><a href="#/families/${family.id}" class="grow" data-act="nav" data-screen="family" data-id="${family.id}"><div class="name-row"><h2>${esc(name)}</h2><span class="pill ${kind}">${label}</span></div><p class="sub">${esc([family.display_name, prettyPhone(family.phone)].filter(Boolean).join(" · "))}</p><p class="muted">${esc(placeOf(family))}</p></a>${family.invite ? `<button class="copy${ui.copied === family.id ? " done" : ""}" type="button" data-act="copy" data-id="${family.id}">${ui.copied === family.id ? "Скопировано" : "Ссылка"}</button>` : ""}</article>`;
+  }).join("")}${visible.length === 0 ? `<p class="muted">Никого не нашли.</p>` : ""}</div>`;
+}
+
+function familyForm() {
+  if (!ui.form.children) loadFamily(ui.id);
+  const family = db.families.find((item) => item.id === ui.id);
+  const form = ui.form;
+  const groups = db.groups.map((group) => ({ value: group.id, label: `${group.name} · ${branchOf(group.branch_id)?.name}` }));
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/families" data-act="nav" data-screen="families">← Семьи</a><h1 class="d" style="font-size:34px">${esc(ui.id === "new" ? "Новая семья" : form.display_name || "Семья")}</h1>${family?.invite ? `<section class="invite"><span class="label">Ссылка родителя</span><a href="../index.html">${esc(family.invite.link)}</a><p>${family.status === "entered" ? "Родитель уже заходил по этой ссылке." : "Отправьте ссылку. Код для входа пишется в журнал сервера."}</p><div class="row"><button class="btn sm${ui.copied === family.id ? " done" : ""}" type="button" data-act="copy" data-id="${family.id}">${ui.copied === family.id ? "Скопировано" : "Скопировать"}</button><button class="btn sm ghost" type="button" data-act="renew">Новая ссылка</button></div></section>` : ""}<section class="child-block"><label class="field"><span>Телефон родителя</span><input class="input" id="fam-phone" inputmode="tel" value="${esc(form.phone)}" placeholder="+7 900 000-00-00"></label><label class="field"><span>Как обращаться</span><input class="input" id="fam-name" value="${esc(form.display_name)}" placeholder="Необязательно"></label></section>${form.children.map((child, index) => `<section class="child-block"><header><b>Ребёнок${form.children.length > 1 ? ` ${index + 1}` : ""}</b>${form.children.length > 1 ? `<button class="sub linkish" type="button" data-act="drop-child" data-id="${child.id}">Убрать</button>` : ""}</header><label class="field"><span>Имя</span><input class="input" data-field="first_name" data-id="${child.id}" value="${esc(child.first_name)}"></label><label class="field"><span>Фамилия</span><input class="input" data-field="last_name" data-id="${child.id}" value="${esc(child.last_name)}" placeholder="В кабинете родителя не показывается"></label><label class="field"><span>Группа</span>${selectBox(`child-group-${child.id}`, child.group_id, groups, "Без группы")}</label><label class="field"><span>Дата рождения</span><input class="input" type="date" data-field="birth_date" data-id="${child.id}" value="${esc(child.birth_date)}"></label></section>`).join("")}<button class="btn ghost" type="button" data-act="add-child">Ещё ребёнок</button><button class="btn block${ui.form.saved ? " done" : ""}" type="button" data-act="save-family">${ui.form.saved ? "Сохранено" : "Сохранить"}</button>${ui.id !== "new" ? `<button class="sub linkish" type="button" data-act="del-family">Удалить семью</button>` : ""}</form>`;
+}
+
+function groupsPage() {
+  return `<header class="desk-head"><div><h1 class="d">Группы</h1><p class="muted">Кто где занимается</p></div><a class="btn yellow" href="#/groups/new" data-act="nav" data-screen="group" data-id="new">Новая группа</a></header><div class="place-grid">${db.groups.map((group) => {
+    const kids = kidsIn(group.id).length;
+    return `<a class="place" href="#/groups/${group.id}" data-act="nav" data-screen="group" data-id="${group.id}"><span class="label">${esc(branchOf(group.branch_id)?.name || "")}</span><h2>${esc(group.name)}</h2><p class="sub">${esc(group.age_label)}</p><p class="muted">${kids ? countLabel(kids, "ребёнок", "ребёнка", "детей") : "Детей пока нет"}</p></a>`;
+  }).join("")}</div>`;
+}
+
+function groupForm() {
+  if (!ui.form.slots) loadGroup(ui.id);
+  const form = ui.form;
+  const branches = db.branches.map((item) => ({ value: item.id, label: item.name }));
+  const daySlots = form.slots.filter((slot) => slot.weekday === form.openDay);
+  const summary = form.slots.filter((slot) => slot.starts_at || slot.title.trim());
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/groups" data-act="nav" data-screen="groups">← Группы</a><h1 class="d" style="font-size:34px">${esc(ui.id === "new" ? "Новая группа" : form.name || "Группа")}</h1><label class="field"><span>Название</span><input class="input" id="grp-name" value="${esc(form.name)}"></label><label class="field"><span>Филиал</span>${selectBox("grp-branch", form.branch_id, branches, "Выберите филиал")}</label><label class="field"><span>Возраст</span><input class="input" id="grp-age" value="${esc(form.age_label)}" placeholder="10–12 лет"></label><div class="week" role="group" aria-label="Дни занятий">${DAYS.map((label, weekday) => {
+    const marked = form.slots.some((slot) => slot.weekday === weekday && (slot.starts_at || slot.title.trim()));
+    return `<button type="button" aria-pressed="${marked}" aria-expanded="${form.openDay === weekday}" data-act="day" data-day="${weekday}">${label}</button>`;
+  }).join("")}</div><p class="fine">Нажмите день, чтобы открыть его. В один день можно несколько занятий.</p>${form.openDay === null && summary.length ? `<p class="fine">${esc(summary.map((slot) => `${DAYS[slot.weekday]} ${slot.starts_at}, ${slot.title}`).join(" · "))}</p>` : ""}${form.openDay !== null ? `<section class="child-block"><header><b>${DAYS[form.openDay]}</b><button class="text-btn" type="button" data-act="clear-day">Убрать этот день</button></header>${daySlots.map((slot, index) => `<div class="lesson-slot">${daySlots.length > 1 ? `<div class="slot-head"><span>Занятие ${index + 1}</span><button class="text-btn" type="button" data-act="drop-slot" data-id="${slot.id}">Убрать</button></div>` : ""}<label class="field"><span>Время</span><input class="input" type="time" data-slot="${slot.id}" data-field="starts_at" value="${esc(slot.starts_at)}"></label><label class="field"><span>Занятие</span><input class="input" data-slot="${slot.id}" data-field="title" value="${esc(slot.title)}" placeholder="Дефиле"></label></div>`).join("")}<button class="text-btn" type="button" data-act="add-slot">Ещё занятие</button></section>` : ""}<button class="btn block${form.saved ? " done" : ""}" type="button" data-act="save-group">${form.saved ? "Сохранено" : "Сохранить"}</button>${ui.id !== "new" ? `<button class="sub linkish" type="button" data-act="del-group">Удалить группу</button>` : ""}</form>`;
+}
+
+function attendancePage() {
+  const group = groupOf(ui.groupId) || db.groups[0];
+  const kids = kidsIn(group.id);
+  const days = [];
+  for (let day = 1; day <= 30; day += 1) {
+    const date = new Date(ui.year, ui.month - 1, day);
+    const iso = `${ui.year}-${pad(ui.month)}-${pad(day)}`;
+    if (iso >= "2026-11-27") continue;
+    for (const lesson of group.lessons) {
+      if (((date.getDay() + 6) % 7) !== lesson.weekday) continue;
+      days.push({ date: iso, day: DAYS[lesson.weekday], starts_at: lesson.starts_at, title: lesson.title, date_label: dateLabel(iso) });
+    }
+  }
+  const windows = [];
+  for (const day of days) {
+    const last = windows[windows.length - 1];
+    if (last && last.date === day.date) last.lessons.push(day);
+    else windows.push({ date: day.date, day: day.day, lessons: [day] });
+  }
+  const gaps = [];
+  for (const day of days) {
+    for (const child of kids) {
+      const mark = db.marks[`${child.id}|${day.date}|${day.starts_at}`];
+      if (mark?.present === false && !(mark.reason && mark.decision)) gaps.push({ child, day, mark });
+    }
+  }
+  const options = db.groups.map((item) => ({ value: item.id, label: item.name }));
+  return `<div class="attend-desk"><header class="desk-head"><div><h1 class="d">Посещаемость</h1><p class="muted">Прошедшие занятия группы. Причину пропуска пишет родитель, отработку или продление выбираете вы.</p></div></header><div class="attend-tools"><label class="field"><span>Группа</span>${selectBox("att-group", group.id, options, "Выберите группу")}</label></div><div class="cal-title"><button type="button" disabled>‹</button><h2>${MONTHS[ui.month - 1]}</h2><button type="button" disabled>›</button></div><div class="reg-scroll"><table class="reg"><thead><tr><th class="reg-name">Ребёнок</th>${windows.map((groupDay) => `<th class="reg-day" colspan="${groupDay.lessons.length}"><span class="reg-date"><small>${groupDay.day}</small><b>${Number(groupDay.date.slice(8))}</b></span></th>`).join("")}</tr><tr><th class="reg-name reg-slot"></th>${windows.flatMap((groupDay) => groupDay.lessons.map((lesson, index) => `<th class="reg-slot${index === 0 ? " reg-day" : ""}"><span class="reg-date"><small>${esc(lesson.starts_at)}</small>${lesson.title ? `<small>${esc(lesson.title)}</small>` : ""}</span><button type="button" class="reg-all" data-act="fill" data-date="${lesson.date}" data-at="${lesson.starts_at}">Все были</button></th>`)).join("")}</tr></thead><tbody>${kids.map((child) => `<tr><th scope="row">${esc(child.first_name)}</th>${windows.flatMap((groupDay) => groupDay.lessons.map((lesson, index) => {
+    const cell = db.marks[`${child.id}|${lesson.date}|${lesson.starts_at}`] || { present: null };
+    return `<td class="${index === 0 ? "reg-day" : ""}"><div class="reg-split"><button type="button" class="here" aria-pressed="${cell.present === true}" data-act="mark" data-child="${child.id}" data-date="${lesson.date}" data-at="${lesson.starts_at}" data-val="true">был</button><button type="button" class="miss" aria-pressed="${cell.present === false}" data-act="mark" data-child="${child.id}" data-date="${lesson.date}" data-at="${lesson.starts_at}" data-val="false">пропуск</button></div></td>`;
+  })).join("")}</tr>`).join("")}</tbody></table></div>${gaps.length ? `<section class="reg-gaps"><h2>Ждут причины или решения</h2>${gaps.map((gap) => `<article><div><b>${esc(gap.child.first_name)}</b><p>${esc(gap.day.date_label)} · ${esc(gap.day.starts_at)} · ${esc(gap.day.title)}</p><p class="muted">${esc(gap.mark.reason || "Причины пока нет")}${gap.mark.note ? `. ${esc(gap.mark.note)}` : ""}</p></div><div class="mark-pair"><button type="button" aria-pressed="${gap.mark.decision === "makeup"}" data-act="decide" data-child="${gap.child.id}" data-date="${gap.day.date}" data-at="${gap.day.starts_at}" data-val="makeup">Отработка</button><button type="button" aria-pressed="${gap.mark.decision === "extend"}" data-act="decide" data-child="${gap.child.id}" data-date="${gap.day.date}" data-at="${gap.day.starts_at}" data-val="extend">Продление</button></div></article>`).join("")}</section>` : ""}</div>`;
+}
+
+function programsPage() {
+  return `<header class="desk-head"><div><h1 class="d">Программа</h1><p class="muted">Месяц группы, по направлениям</p></div><a class="btn yellow" href="#/programs/new" data-act="nav" data-screen="program" data-id="new">Новая программа</a></header><div class="place-grid">${db.programs.map((program) => {
+    const group = groupOf(program.group_id);
+    return `<a class="place" href="#/programs/${program.id}" data-act="nav" data-screen="program" data-id="${program.id}"><span class="label">${esc(branchOf(group.branch_id)?.name || "")}</span><h2>${MONTHS[program.month - 1]} ${program.year}</h2><p class="sub">${esc(group.name)}</p><span class="pill ${program.filled ? "ok" : "warn"}">${program.filled ? "У родителей" : "Пока пусто"}</span></a>`;
+  }).join("")}</div>`;
+}
+function programForm() {
+  const program = db.programs.find((item) => item.id === ui.id);
+  const creating = ui.id === "new";
+  if (creating && !ui.form.directions) ui.form = { group_id: "g1", month: "2026-12", directions: SUGGESTED.map((name) => ({ name, topics: "", goal: "", can_do: "" })) };
+  const item = creating ? ui.form : program;
+  const groups = db.groups.map((group) => ({ value: group.id, label: group.name }));
+  return `<form class="desk-form" data-act="stop" style="max-width:720px"><a class="back-link" href="#/programs" data-act="nav" data-screen="programs">← Программа</a><h1 class="d" style="font-size:34px">${creating ? "Новая программа" : `${MONTHS[item.month - 1] || ""} ${item.year || ""}`}</h1>${creating ? `<label class="field"><span>Группа</span>${selectBox("prog-group", item.group_id, groups, "Группа")}</label><label class="field"><span>Месяц</span><input class="input" type="month" id="prog-month" value="${esc(item.month)}"></label>` : ""}<p class="fine">На месяц: темы, цель и что ребёнок будет уметь.</p>${item.directions.map((line, index) => `<section class="child-block"><label class="field"><span>Направление</span><input class="input" data-dir="${index}" data-field="name" value="${esc(line.name)}"></label><label class="field"><span>Темы</span><textarea class="input" data-dir="${index}" data-field="topics">${esc(line.topics)}</textarea></label><label class="field"><span>Цель</span><textarea class="input" data-dir="${index}" data-field="goal">${esc(line.goal)}</textarea></label><label class="field"><span>Будет уметь</span><textarea class="input" data-dir="${index}" data-field="can_do">${esc(line.can_do)}</textarea></label></section>`).join("")}<button class="btn block" type="button" data-act="save-program">Сохранить</button></form>`;
+}
+
+function reportsPage() {
+  return `<header class="desk-head"><div><h1 class="d">Отчёты</h1><p class="muted">Раз в месяц, по группе</p></div><a class="btn yellow" href="#/reports/new" data-act="nav" data-screen="report" data-id="new">Новый отчёт</a></header><div class="place-grid">${db.reports.map((report) => {
+    const group = groupOf(report.group_id);
+    const kids = kidsIn(report.group_id).length;
+    return `<a class="place" href="#/reports/${report.id}" data-act="nav" data-screen="report" data-id="${report.id}"><span class="label">${esc(branchOf(group.branch_id)?.name || "")}</span><h2>${MONTHS[report.month - 1]} ${report.year}</h2><p class="sub">${esc(group.name)}</p><p class="muted">${countLabel(kids, "ребёнок", "ребёнка", "детей")}</p><span class="pill ${report.sent ? "ok" : "warn"}">${report.sent ? "У родителей" : "Черновик"}</span></a>`;
+  }).join("")}</div>`;
+}
+function reportForm() {
+  if (ui.id === "new") {
+    const groups = db.groups.map((group) => ({ value: group.id, label: group.name }));
+    return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/reports" data-act="nav" data-screen="reports">← Отчёты</a><h1 class="d" style="font-size:34px">Новый отчёт</h1><label class="field"><span>Группа</span>${selectBox("rep-group", ui.form.group_id || "g1", groups, "Группа")}</label><label class="field"><span>Месяц</span><input class="input" type="month" id="rep-month" value="${ui.form.month || "2026-11"}"></label><button class="btn block" type="button" data-act="create-report">Создать</button></form>`;
+  }
+  const report = db.reports.find((item) => item.id === ui.id);
+  const kids = kidsIn(report.group_id);
+  return `<form class="desk-form" data-act="stop" style="max-width:720px"><a class="back-link" href="#/reports" data-act="nav" data-screen="reports">← Отчёты</a><h1 class="d" style="font-size:34px">${MONTHS[report.month - 1]} · ${esc(groupOf(report.group_id).name)}</h1><label class="field"><span>Что проходили</span><textarea class="input" id="rep-studied">${esc(report.studied)}</textarea></label><label class="field"><span>Над чем работаем</span><textarea class="input" id="rep-focus">${esc(report.focus)}</textarea></label><label class="field"><span>Задание на дом</span><textarea class="input" id="rep-homework">${esc(report.homework)}</textarea></label>${kids.map((child) => `<label class="field"><span>Что получается · ${esc(child.first_name)}</span><textarea class="input" data-line="${child.id}">${esc(report.lines[child.id] || "")}</textarea></label>`).join("")}<p class="fine">Пустые слова о ребёнке сами не дописываются.</p><button class="btn block" type="button" data-act="save-report">Сохранить</button>${report.sent ? `<p class="muted">У родителей с ${esc(dateLabel("2026-11-26"))}.</p>` : `<button class="btn yellow" type="button" data-act="send-report">Отправить родителям</button>`}</form>`;
+}
+
+function videosPage() {
+  return `<div class="video-desk"><header class="desk-head"><div><h1 class="d">Видео</h1><p class="muted">Один ролик на группу и дату. Родитель видит его, если включил отметку на фото и видео.</p></div></header><form class="desk-form" data-act="stop"><label class="field"><span>Группа</span>${selectBox("vid-group", ui.groupId, db.groups.map((group) => ({ value: group.id, label: group.name })), "Группа")}</label><label class="field"><span>Дата занятия</span><input class="input" type="date" id="vid-date" value="${esc(ui.videoDate)}"></label><div class="field"><span>Файл</span><label class="drop${ui.videoFile ? " has" : ""}"><input type="file" id="vid-file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov">${ui.videoFile ? `<b>${esc(ui.videoFile)}</b><small>нажмите, чтобы заменить</small>` : `<b>Перетащите видео сюда</b><small>или нажмите, чтобы выбрать. mp4, webm или mov</small>`}</label></div><button class="btn" type="button" data-act="upload-video">Загрузить</button></form>${db.videos.length === 0 ? `<section class="desk-empty"><h1 class="d">Записей нет</h1><p class="sub">Когда файл загрузится, он появится у родителей этой группы.</p></section>` : `<div class="list">${db.videos.map((video) => {
+    const group = groupOf(video.group_id);
+    return `<div class="li"><span class="grow"><b>${esc(dateLabel(video.date))}</b><small>${esc(group.name)} · ${esc(branchOf(group.branch_id)?.name)}</small></span><button class="text-btn" type="button" data-act="del-video" data-id="${video.id}">Удалить</button></div>`;
+  }).join("")}</div>`}</div>`;
+}
+
+function galleryPage() {
+  const album = db.albums.find((item) => item.id === ui.albumOpen);
+  const kids = db.families.flatMap((family) => family.children.map((child) => ({ value: child.id, label: `${child.first_name} · ${groupOf(child.group_id)?.name || ""}` })));
+  return `<header class="desk-head"><div><h1 class="d">Галерея</h1><p class="muted">Альбом группы или личная фотосессия. Пустой альбом родитель не видит.</p></div></header><form class="desk-form" data-act="stop"><div class="kind-pair" role="group"><button type="button" aria-pressed="${ui.albumKind === "group"}" data-act="album-kind" data-kind="group">Группа</button><button type="button" aria-pressed="${ui.albumKind === "personal"}" data-act="album-kind" data-kind="personal">Фотосессия</button></div>${ui.albumKind === "group" ? `<label class="field"><span>Группа</span>${selectBox("alb-group", ui.groupId, db.groups.map((group) => ({ value: group.id, label: group.name })), "Группа")}</label>` : `<label class="field"><span>Ребёнок</span>${selectBox("alb-child", ui.form.child_id || kids[0]?.value, kids, "Ребёнок")}</label>`}<label class="field"><span>Название</span><input class="input" id="alb-title" value="${esc(ui.albumTitle)}" placeholder="Например: Шоу декабря"></label><label class="field"><span>Дата</span><input class="input" type="date" id="alb-date" value="${esc(ui.albumDate)}"></label><button class="btn" type="button" data-act="create-album">Создать альбом</button></form><div class="list">${db.albums.map((item) => `<div class="li"><button class="grow album-open-btn" type="button" aria-pressed="${ui.albumOpen === item.id}" data-act="open-album" data-id="${item.id}"><b>${esc(item.title)}</b><small>${esc(dateLabel(item.date))} · ${item.kind === "personal" ? "фотосессия" : "группа"} · ${item.photos.length ? `${item.photos.length} фото` : "фото пока нет"}</small></button><button class="text-btn" type="button" data-act="del-album" data-id="${item.id}">Удалить</button></div>`).join("")}</div>${album ? `<section class="album-desk"><h2 class="d">${esc(album.title)}</h2><p class="muted">${esc(dateLabel(album.date))}</p><div class="photo-tray${album.photos.length ? "" : " empty"}">${album.photos.length === 0 ? `<p class="photo-tray-empty">В демо фото уже можно открыть в других альбомах. Новые снимки здесь не загружаются на сервер.</p>` : `<div class="shot-grid">${album.photos.map((photo) => `<figure><button class="shot-open" type="button" data-act="preview" data-url="${photo.url}"><img src="${photo.url}" alt=""></button><button class="shot-x" type="button" aria-label="Удалить фото" data-act="del-photo" data-album="${album.id}" data-id="${photo.id}">×</button></figure>`).join("")}</div>`}</div></section>` : ""}${ui.preview ? `<div class="photo-modal" data-act="close-preview"><div class="photo-modal-card" data-act="stop"><img src="${ui.preview}" alt=""><div class="photo-modal-bar"><button type="button" data-act="close-preview">Закрыть</button></div></div></div>` : ""}`;
+}
+
+function eventsPage() {
+  return `<header class="desk-head"><div><h1 class="d">Мероприятия</h1><p class="muted">Батлы, шоу, фотосессии и проекты. Родитель видит событие после описания, заявку отмечает школа.</p></div><a class="btn yellow" href="#/events/new" data-act="nav" data-screen="event" data-id="new">Новое событие</a></header><div class="place-grid">${db.events.map((event) => {
+    const requested = event.requests.filter((item) => item.status !== "none").length;
+    const registered = event.requests.filter((item) => item.status === "registered").length;
+    return `<a class="place" href="#/events/${event.id}" data-act="nav" data-screen="event" data-id="${event.id}"><span class="label">${KINDS[event.kind]}</span><h2>${esc(event.title)}</h2><p class="sub">${esc(dateLabel(event.date))}${event.starts_at ? `, ${esc(event.starts_at)}` : ""} · ${esc(event.place)}</p><span class="pill ${event.description ? "ok" : "warn"}">${event.description ? "У родителей" : "Пока пусто"}</span>${requested ? `<span class="pill soft">${countLabel(requested, "заявка", "заявки", "заявок")}${registered ? ` · записано ${registered}` : ""}</span>` : ""}</a>`;
+  }).join("")}</div>`;
+}
+function eventForm() {
+  if (ui.id === "new") {
+    return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/events" data-act="nav" data-screen="events">← Мероприятия</a><h1 class="d" style="font-size:34px">Новое событие</h1><label class="field"><span>Тип</span>${selectBox("ev-kind", ui.form.kind || "show", Object.entries(KINDS).map(([value, label]) => ({ value, label })), "Тип")}</label><label class="field"><span>Название</span><input class="input" id="ev-title" value="${esc(ui.form.title || "")}"></label><label class="field"><span>Дата</span><input class="input" type="date" id="ev-date" value="${esc(ui.form.date || "2026-12-20")}"></label><button class="btn block" type="button" data-act="create-event">Создать</button></form>`;
+  }
+  const event = db.events.find((item) => item.id === ui.id);
+  return `<form class="desk-form" data-act="stop" style="max-width:720px"><a class="back-link" href="#/events" data-act="nav" data-screen="events">← Мероприятия</a><h1 class="d" style="font-size:34px">${esc(event.title)}</h1><label class="field"><span>Место</span><input class="input" id="ev-place" value="${esc(event.place)}"></label><label class="field"><span>Время</span><input class="input" type="time" id="ev-time" value="${esc(event.starts_at)}"></label><label class="field"><span>Цена</span><input class="input" id="ev-price" value="${event.price}"></label><label class="field"><span>Описание</span><textarea class="input" id="ev-text">${esc(event.description)}</textarea></label><button class="btn block" type="button" data-act="save-event">Сохранить</button>${event.requests.length ? `<section class="child-block"><b>Заявки</b>${event.requests.map((row) => {
+    const child = childOf(row.child_id);
+    return `<div class="signup-row"><span class="grow"><b>${esc(child.first_name)}</b><small>${row.status === "registered" ? "Записан" : "Заявка"}</small></span><button class="text-btn" type="button" data-act="signup" data-id="${row.id}">${row.status === "registered" ? "Снять запись" : "Записать"}</button></div>`;
+  }).join("")}</section>` : ""}</form>`;
+}
+
+function peoplePage() {
+  return `<header class="desk-head"><div><h1 class="d">Педагоги</h1><p class="muted">Кто ведёт группы и к кому обратиться в школе.</p></div></header><div class="people-board"><section class="people-block"><header><h2 class="d">Педагоги</h2><a class="btn yellow" href="#/teachers/new" data-act="nav" data-screen="teacher" data-id="new">Добавить</a></header><div class="place-grid">${db.teachers.map((teacher) => `<a class="place with-face" href="#/teachers/${teacher.id}" data-act="nav" data-screen="teacher" data-id="${teacher.id}"><span class="portrait" style="--h:${hue(teacher.name)}">${esc(teacher.name.slice(0, 1))}</span><span class="grow">${teacher.teaches ? `<span class="chip">${esc(teacher.teaches)}</span>` : ""}<h2>${esc(teacher.name)}</h2><p class="sub">${esc(teacher.about)}</p></span></a>`).join("")}</div></section><section class="people-block"><header><h2 class="d">Контакты школы</h2><a class="btn yellow" href="#/contacts/new" data-act="nav" data-screen="contact" data-id="new">Добавить</a></header><div class="place-grid">${db.contacts.map((contact) => `<a class="place with-face" href="#/contacts/${contact.id}" data-act="nav" data-screen="contact" data-id="${contact.id}"><span class="portrait" style="--h:${hue(contact.name)}">${esc(contact.name.slice(0, 1))}</span><span class="grow"><h2>${esc(contact.name)}</h2><p class="sub">${esc(contact.reach)}</p><span class="pill ${contact.topics ? "ok" : "warn"}">${contact.topics ? "У родителей" : "Пока пусто"}</span></span></a>`).join("")}</div></section></div>`;
+}
+function teacherForm() {
+  const item = db.teachers.find((row) => row.id === ui.id);
+  const creating = ui.id === "new";
+  const value = creating ? (ui.form.name ? ui.form : { name: "", teaches: "", about: "" }) : item;
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/teachers" data-act="nav" data-screen="teachers">← Педагоги</a><h1 class="d" style="font-size:34px">${creating ? "Новый педагог" : esc(value.name)}</h1><label class="field"><span>Имя</span><input class="input" id="tch-name" value="${esc(value.name)}"></label><label class="field"><span>Что ведёт</span><input class="input" id="tch-teaches" value="${esc(value.teaches)}"></label><label class="field"><span>О себе</span><textarea class="input" id="tch-about">${esc(value.about)}</textarea></label><button class="btn block" type="button" data-act="save-teacher">Сохранить</button></form>`;
+}
+function contactForm() {
+  const item = db.contacts.find((row) => row.id === ui.id);
+  const creating = ui.id === "new";
+  const value = creating ? (ui.form.name ? ui.form : { name: "", reach: "", topics: "" }) : item;
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/teachers" data-act="nav" data-screen="teachers">← Педагоги</a><h1 class="d" style="font-size:34px">${creating ? "Новый контакт" : esc(value.name)}</h1><label class="field"><span>Имя</span><input class="input" id="ct-name" value="${esc(value.name)}"></label><label class="field"><span>Как связаться</span><input class="input" id="ct-reach" value="${esc(value.reach)}"></label><label class="field"><span>По каким вопросам</span><textarea class="input" id="ct-topics">${esc(value.topics)}</textarea></label><button class="btn block" type="button" data-act="save-contact">Сохранить</button></form>`;
+}
+
+function ratingsPage() {
+  const rows = db.ratings;
+  const low = rows.filter((row) => row.low).length;
+  const avg = rows.length ? (rows.reduce((sum, row) => sum + row.score, 0) / rows.length).toFixed(1).replace(".", ",") : "Нет данных";
+  const tasks = rows.filter((row) => row.task_open);
+  const picked = rows.find((row) => row.id === ui.ratePicked);
+  return `<div class="rate-desk"><header class="desk-head"><div><h1 class="d">Оценка школы</h1><p class="muted">Родитель ставит оценку раз в месяц. При 6 и ниже появляется задача позвонить. Пустую оценку и комментарий не подставляем.</p></div><div class="cal-title"><button type="button" disabled>‹</button><h2 class="d">Ноябрь</h2><button type="button" disabled>›</button></div></header><div class="rate-stats"><section class="card"><span class="label">Оценок</span><b>${rows.length}</b></section><section class="card"><span class="label">Средняя</span><b>${avg}</b></section><section class="card"><span class="label">6 и ниже</span><b>${low || "Нет"}</b></section></div>${tasks.length ? `<section class="rate-tasks"><header><h2 class="d">Позвонить</h2><p class="muted">${countLabel(tasks.length, "звонок", "звонка", "звонков")}</p></header>${tasks.map((task) => `<article class="rate-task"><div><span class="pill warn">${task.score}</span><h3>${esc(task.family)}</h3><p class="sub rate-clip">${esc(prettyPhone(task.phone))} · ${esc(task.place)}</p><p class="muted rate-clip">${esc(task.comment)}</p></div><div class="row-actions"><button class="btn ghost sm" type="button" data-act="rate-open" data-id="${task.id}">Оценка</button><button class="btn sm" type="button" data-act="rate-done" data-id="${task.id}">Позвонили</button></div></article>`).join("")}</section>` : ""}<section class="rate-feed"><header><h2 class="d">Все оценки</h2><p class="muted">${countLabel(rows.length, "оценка", "оценки", "оценок")} за ноябрь</p></header><div class="desk-list">${rows.map((row) => `<button class="person rate-row" type="button" data-act="rate-open" data-id="${row.id}"><span class="rate-mark${row.low ? " low" : ""}">${row.score}</span><div><h2>${esc(row.family)}</h2><p class="sub rate-clip">${esc(prettyPhone(row.phone))} · ${esc(row.place)}</p>${row.comment ? `<p class="muted rate-clip">${esc(row.comment)}</p>` : ""}</div><span class="pill ${row.task_open ? "warn" : row.low ? "soft" : "ok"}">${row.task_open ? "Позвонить" : row.low ? "Закрыта" : "Ок"}</span></button>`).join("")}</div></section>${picked ? `<div class="photo-modal" data-act="rate-close"><div class="rate-modal" role="dialog" data-act="stop"><span class="rate-mark${picked.low ? " low" : ""}">${picked.score}</span><span class="pill ${picked.task_open ? "warn" : picked.low ? "soft" : "ok"}">${picked.task_open ? "Позвонить" : picked.low ? "Закрыта" : "Ок"}</span><h2 class="d">${esc(picked.family)}</h2><p class="sub">${esc(picked.place)}</p><p class="rate-modal-phone">${esc(prettyPhone(picked.phone))}</p><p class="rate-modal-text">${esc(picked.comment || "Комментария нет.")}</p><div class="row-actions"><a class="btn ghost sm" href="#/families/${picked.family_id}" data-act="nav" data-screen="family" data-id="${picked.family_id}">Семья</a>${picked.task_open ? `<button class="btn sm" type="button" data-act="rate-done" data-id="${picked.id}">Позвонили</button>` : ""}<button class="btn ghost sm" type="button" data-act="rate-close">Закрыть</button></div></div></div>` : ""}</div>`;
+}
+
+function passesPage() {
+  const group = groupOf(ui.groupId) || db.groups[0];
+  const kids = kidsIn(group.id).map((child) => ({ ...child, ...(db.passes[group.id]?.[child.id] || { paid: null, due_on: "", lessons_note: "" }) }));
+  const visible = kids.filter((child) => ui.showPaid || child.paid !== true);
+  const requests = db.passRequests.filter((row) => row.group_id === group.id && row.status === "requested");
+  const paid = kids.filter((child) => child.paid === true).length;
+  const open = kids.filter((child) => child.paid !== true).length;
+  const options = db.groups.map((item) => ({ value: item.id, label: `${item.name} · ${branchOf(item.branch_id)?.name}` }));
+  const draft = ui.passDraft ? kids.find((child) => child.id === ui.passDraft) : null;
+  return `<div class="pass-desk"><header class="desk-head"><div><h1 class="d">Абонемент</h1><p class="muted">Один месяц и одна группа. Сначала те, у кого месяц ещё не закрыт. Оплаченных прячем, пока не включите «Все».</p></div><div class="cal-title"><button type="button" disabled>‹</button><h2 class="d">Ноябрь</h2><button type="button" disabled>›</button></div></header><div class="pass-tools"><label class="field"><span>Группа</span>${selectBox("pass-group", group.id, options, "Группа")}</label><button class="btn yellow" type="button" data-act="plans">Настроить тарифы</button></div><div class="rate-stats"><section class="card"><span class="label">Не закрыты</span><b>${open || "Нет"}</b></section><section class="card"><span class="label">Оплачены</span><b>${paid || "Нет"}</b></section><section class="card"><span class="label">В группе</span><b>${kids.length}</b></section></div>${requests.length ? `<section class="fold"><div class="fold-head"><b>Заявки на продление</b><span class="pill soft">${requests.length}</span></div><div class="fold-body">${requests.map((row) => {
+    const child = childOf(row.child_id);
+    return `<div class="signup-row"><span class="grow"><b>${esc(child.first_name)} ${esc(child.last_name)}</b><small>${esc(row.plan_name)} · ${monthsLabel(row.months)} · ${money(row.amount)}</small></span><button class="text-btn" type="button" data-act="confirm-pass" data-id="${row.id}">Подтвердить</button></div>`;
+  }).join("")}</div></section>` : ""}<div class="kind-pair" role="group"><button type="button" aria-pressed="${!ui.showPaid}" data-act="show-paid" data-val="0">Незакрытые</button><button type="button" aria-pressed="${ui.showPaid}" data-act="show-paid" data-val="1">Все</button></div><div class="desk-list">${visible.map((child) => {
+    const status = child.paid === true ? ["pill ok", "Оплачен"] : child.paid === false ? ["pill warn", "Не оплачен"] : ["pill soft", "Нет отметки"];
+    const name = `${child.first_name} ${child.last_name}`.trim();
+    return `<button class="person rate-row" type="button" data-act="pass-open" data-id="${child.id}"><span class="face" style="--h:${hue(name)}">${esc(name.slice(0, 1))}</span><div><h2>${esc(name)}</h2>${child.lessons_note ? `<p class="sub">${esc(child.lessons_note)}</p>` : ""}${child.paid === false && child.due_on ? `<p class="muted">Оплатить до ${esc(child.due_on)}</p>` : ""}</div><span class="${status[0]}">${status[1]}</span></button>`;
+  }).join("")}</div>${ui.plansOpen ? `<div class="photo-modal" data-act="plans-close"><div class="person-sheet pass-plan-modal" data-act="stop" style="align-items:stretch;text-align:left"><h2 class="d">Тарифы · ${esc(group.name)}</h2><p class="muted">Заявка родителя ничего не списывает. Месяцы отмечаете вы после подтверждения.</p><div class="pass-plan-list">${(db.plans[group.id] || []).map((plan) => `<div class="pass-plan-row"><b>${esc(plan.name)}</b><small>${esc(plan.details)}</small><div class="pass-plan-prices">${plan.terms.map((term) => `${monthsLabel(term.months)} · ${money(term.price)}`).join("<br>")}</div></div>`).join("")}</div><button class="btn" type="button" data-act="plans-close">Закрыть</button></div></div>` : ""}${draft ? `<div class="photo-modal" data-act="pass-close"><form class="rate-modal" data-act="stop"><span class="label">Ноябрь 2026</span><h2 class="d">${esc(draft.first_name)} ${esc(draft.last_name)}</h2><div class="kind-pair" role="group"><button type="button" aria-pressed="${draft.paid === true}" data-act="pass-paid" data-val="true">Оплачен</button><button type="button" aria-pressed="${draft.paid === false}" data-act="pass-paid" data-val="false">Не оплачен</button><button type="button" aria-pressed="${draft.paid == null}" data-act="pass-paid" data-val="null">Пусто</button></div><label class="field"><span>Оплатить до</span><input class="input" type="date" id="pass-due" value="${esc(draft.due_on)}"></label><label class="field"><span>Занятия в месяце</span><input class="input" id="pass-note" value="${esc(draft.lessons_note)}"></label><div class="row-actions"><button class="btn ghost sm" type="button" data-act="pass-close">Отмена</button><button class="btn sm" type="button" data-act="pass-save">Сохранить</button></div></form></div>` : ""}</div>`;
+}
+
+function pointsPage() {
+  return `<header class="desk-head"><div><h1 class="d">Прогресс</h1><p class="muted">Три точки сезона: А, Б и В. Родитель видит только своего ребёнка.</p></div><div class="row-actions"><a class="btn ghost" href="#/points/rubric" data-act="nav" data-screen="rubric">Рубрика</a><a class="btn yellow" href="#/points/new" data-act="nav" data-screen="point" data-id="new">Новая точка</a></div></header><div class="place-grid">${db.points.map((point) => {
+    const group = groupOf(point.group_id);
+    const letter = { A: "Точка А", B: "Точка Б", C: "Точка В" }[point.code];
+    const kids = kidsIn(point.group_id).length;
+    return `<a class="place" href="#/points/${point.id}" data-act="nav" data-screen="point" data-id="${point.id}"><span class="label">${esc(branchOf(group.branch_id)?.name || "")}</span><h2>${letter}</h2><p class="sub">${esc(group.name)} · сезон ${esc(point.season)}</p><p class="muted">${esc(dateLabel(point.date))} · ${countLabel(kids, "ребёнок", "ребёнка", "детей")}</p><span class="pill ${point.sent ? "ok" : "warn"}">${point.sent ? "У родителей" : "Черновик"}</span></a>`;
+  }).join("")}</div>`;
+}
+function pointForm() {
+  if (ui.id === "new") {
+    return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/points" data-act="nav" data-screen="points">← Прогресс</a><h1 class="d" style="font-size:34px">Новая точка</h1><label class="field"><span>Группа</span>${selectBox("pt-group", ui.form.group_id || "g1", db.groups.map((group) => ({ value: group.id, label: group.name })), "Группа")}</label><label class="field"><span>Точка</span>${selectBox("pt-code", ui.form.code || "C", [{ value: "A", label: "Точка А · начало" }, { value: "B", label: "Точка Б · после первого блока" }, { value: "C", label: "Точка В · итог года" }], "Точка")}</label><label class="field"><span>Дата</span><input class="input" type="date" id="pt-date" value="${esc(ui.form.date || "2026-05-20")}"></label><button class="btn block" type="button" data-act="create-point">Создать</button></form>`;
+  }
+  const point = db.points.find((item) => item.id === ui.id);
+  const kids = kidsIn(point.group_id);
+  return `<form class="desk-form" data-act="stop" style="max-width:720px"><a class="back-link" href="#/points" data-act="nav" data-screen="points">← Прогресс</a><h1 class="d" style="font-size:34px">${{ A: "Точка А", B: "Точка Б", C: "Точка В" }[point.code]} · ${esc(groupOf(point.group_id).name)}</h1>${kids.map((child) => `<section class="child-block"><b>${esc(child.first_name)}</b>${db.skills.map((skill) => `<div class="mark-row"><span>${esc(skill.name)}</span><div class="mark-pick">${[1, 2, 3].map((score) => `<button type="button" aria-pressed="${(point.scores[child.id] || {})[skill.code] === score}" data-act="score" data-child="${child.id}" data-skill="${skill.code}" data-score="${score}">${score}</button>`).join("")}</div></div>`).join("")}</section>`).join("")}${point.sent ? `<p class="muted">У родителей.</p>` : `<button class="btn yellow" type="button" data-act="send-point">Отправить родителям</button>`}</form>`;
+}
+function rubricPage() {
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/points" data-act="nav" data-screen="points">← Прогресс</a><h1 class="d" style="font-size:34px">Рубрика</h1><p class="muted">Навыки, которые входят в баллы 1–3. Сравнение с другими детьми не показываем.</p>${db.skills.map((skill, index) => `<label class="field"><span>Навык ${index + 1}</span><input class="input" data-skill="${skill.code}" value="${esc(skill.name)}"></label>`).join("")}<button class="btn block" type="button" data-act="save-rubric">Сохранить</button></form>`;
+}
+
+function branchesPage() {
+  return `<header class="desk-head"><div><h1 class="d">Филиалы</h1><p class="muted">Площадки школы</p></div><a class="btn yellow" href="#/branches/new" data-act="nav" data-screen="branch" data-id="new">Новый филиал</a></header><div class="place-grid">${db.branches.map((branch) => {
+    const groups = db.groups.filter((group) => group.branch_id === branch.id).length;
+    return `<a class="place" href="#/branches/${branch.id}" data-act="nav" data-screen="branch" data-id="${branch.id}"><h2>${esc(branch.name)}</h2><p class="sub">${esc(branch.address)}</p><p class="muted">${groups ? countLabel(groups, "группа", "группы", "групп") : "Групп пока нет"}</p></a>`;
+  }).join("")}</div>`;
+}
+function branchForm() {
+  const item = db.branches.find((row) => row.id === ui.id);
+  const creating = ui.id === "new";
+  const value = creating ? (ui.form.name != null ? ui.form : { name: "", address: "" }) : item;
+  return `<form class="desk-form" data-act="stop"><a class="back-link" href="#/branches" data-act="nav" data-screen="branches">← Филиалы</a><h1 class="d" style="font-size:34px">${creating ? "Новый филиал" : esc(value.name)}</h1><label class="field"><span>Название</span><input class="input" id="br-name" value="${esc(value.name)}" placeholder="Сперанского"></label><label class="field"><span>Адрес</span><input class="input" id="br-address" value="${esc(value.address)}" placeholder="ул. Сперанского, 37"></label><button class="btn block" type="button" data-act="save-branch">Сохранить</button></form>`;
+}
+
+function view() {
+  if (ui.screen === "families") return familiesPage();
+  if (ui.screen === "family") return familyForm();
+  if (ui.screen === "groups") return groupsPage();
+  if (ui.screen === "group") return groupForm();
+  if (ui.screen === "attendance") return attendancePage();
+  if (ui.screen === "programs") return programsPage();
+  if (ui.screen === "program") return programForm();
+  if (ui.screen === "reports") return reportsPage();
+  if (ui.screen === "report") return reportForm();
+  if (ui.screen === "videos") return videosPage();
+  if (ui.screen === "gallery") return galleryPage();
+  if (ui.screen === "events") return eventsPage();
+  if (ui.screen === "event") return eventForm();
+  if (ui.screen === "teachers") return peoplePage();
+  if (ui.screen === "teacher") return teacherForm();
+  if (ui.screen === "contact") return contactForm();
+  if (ui.screen === "ratings") return ratingsPage();
+  if (ui.screen === "passes") return passesPage();
+  if (ui.screen === "points") return pointsPage();
+  if (ui.screen === "point") return pointForm();
+  if (ui.screen === "rubric") return rubricPage();
+  if (ui.screen === "branches") return branchesPage();
+  if (ui.screen === "branch") return branchForm();
+  return familiesPage();
+}
+
+function render() {
+  const titles = { families: "Семьи", family: "Семья", groups: "Группы", group: "Группа", attendance: "Посещаемость", programs: "Программа", program: "Программа", reports: "Отчёты", report: "Отчёт", videos: "Видео", gallery: "Галерея", events: "Мероприятия", event: "Событие", teachers: "Педагоги", teacher: "Педагог", contact: "Контакт", ratings: "Оценка", passes: "Абонемент", points: "Прогресс", point: "Точка", rubric: "Рубрика", branches: "Филиалы", branch: "Филиал", login: "Вход" };
+  document.title = `${titles[ui.screen] || "Кабинет школы"} · Daisy`;
+  document.getElementById("root").innerHTML = ui.loggedIn ? shell(view()) : loginScreen();
+}
+
+function writeClipboard(text) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
+  return Promise.resolve(false);
+}
+
+function setSelect(name, value) {
+  ui.select = "";
+  if (name === "att-group" || name === "vid-group" || name === "alb-group" || name === "pass-group") ui.groupId = value || ui.groupId;
+  if (name === "grp-branch") ui.form.branch_id = value;
+  if (name.startsWith("child-group-")) {
+    const child = ui.form.children.find((item) => item.id === name.slice(12));
+    if (child) child.group_id = value;
+  }
+  if (name === "prog-group") ui.form.group_id = value;
+  if (name === "rep-group") ui.form.group_id = value;
+  if (name === "alb-child") ui.form.child_id = value;
+  if (name === "ev-kind") ui.form.kind = value;
+  if (name === "pt-group") ui.form.group_id = value;
+  if (name === "pt-code") ui.form.code = value;
+  render();
+}
+
+function readFamily() {
+  ui.form.phone = document.getElementById("fam-phone")?.value ?? ui.form.phone;
+  ui.form.display_name = document.getElementById("fam-name")?.value ?? ui.form.display_name;
+  document.querySelectorAll("[data-field][data-id]").forEach((input) => {
+    const child = ui.form.children.find((item) => item.id === input.dataset.id);
+    if (child) child[input.dataset.field] = input.value;
+  });
+}
+
+document.getElementById("root").addEventListener("click", (event) => {
+  const el = event.target.closest("[data-act]");
+  if (!el || !document.getElementById("root").contains(el)) return;
+  const act = el.dataset.act;
+  if (act === "stop") return;
+  event.preventDefault();
+  if (act === "nav") {
+    if (el.dataset.screen === "family") loadFamily(el.dataset.id || "new");
+    if (el.dataset.screen === "group") loadGroup(el.dataset.id || "new");
+    if (["program", "report", "event", "teacher", "contact", "point", "branch"].includes(el.dataset.screen)) ui.form = {};
+    go(el.dataset.screen, el.dataset.id || "");
+  } else if (act === "logout") {
+    ui.loggedIn = false;
+    ui.loginError = "";
+    history.pushState({ demo: 1 }, "", "#/login");
+    render();
+  } else if (act === "login") {
+    ui.loginUser = document.getElementById("login-user")?.value.trim() || "";
+    ui.loginPass = document.getElementById("login-pass")?.value || "";
+    if (!ui.loginUser || !ui.loginPass) { ui.loginError = "Введите логин и пароль."; render(); return; }
+    ui.loggedIn = true;
+    ui.user = ui.loginUser;
+    go("families");
+  } else if (act === "copy") {
+    const family = db.families.find((item) => item.id === el.dataset.id);
+    void writeClipboard(family.invite.link).then((ok) => {
+      ui.copied = ok ? family.id : "";
+      notify(ok ? "Ссылка скопирована" : family.invite.link);
+      render();
+    });
+  } else if (act === "select-toggle") {
+    ui.select = ui.select === el.dataset.name ? "" : el.dataset.name;
+    render();
+  } else if (act === "select") setSelect(el.dataset.name, el.dataset.value);
+  else if (act === "add-child") { readFamily(); ui.form.children.push({ id: nid("c"), first_name: "", last_name: "", group_id: "", birth_date: "" }); render(); }
+  else if (act === "drop-child") { readFamily(); ui.form.children = ui.form.children.filter((item) => item.id !== el.dataset.id); render(); }
+  else if (act === "save-family") {
+    readFamily();
+    const payload = { display_name: ui.form.display_name, phone: ui.form.phone, status: "waiting", invite: { token: nid("i"), link: `http://localhost:5173/i/${nid("i")}` }, children: ui.form.children.filter((child) => child.first_name.trim()) };
+    if (ui.id === "new") {
+      payload.id = nid("f");
+      db.families.unshift(payload);
+      ui.id = payload.id;
+    } else {
+      const family = db.families.find((item) => item.id === ui.id);
+      Object.assign(family, { display_name: payload.display_name, phone: payload.phone, children: payload.children });
+    }
+    ui.form.saved = true;
+    notify("Сохранено");
+    render();
+  } else if (act === "renew") {
+    const family = db.families.find((item) => item.id === ui.id);
+    family.invite = { token: nid("i"), link: `http://localhost:5173/i/${nid("i")}` };
+    family.status = "waiting";
+    notify("Новая ссылка готова, старая закрыта");
+    render();
+  } else if (act === "del-family") {
+    if (!window.confirm("Убрать семью из кабинета?")) return;
+    db.families = db.families.filter((item) => item.id !== ui.id);
+    go("families");
+  } else if (act === "day") {
+    const weekday = Number(el.dataset.day);
+    ui.form.openDay = ui.form.openDay === weekday ? null : weekday;
+    if (ui.form.openDay !== null && !ui.form.slots.some((slot) => slot.weekday === weekday)) ui.form.slots.push({ id: nid("s"), weekday, starts_at: "", title: "" });
+    render();
+  } else if (act === "add-slot") { ui.form.slots.push({ id: nid("s"), weekday: ui.form.openDay, starts_at: "", title: "" }); render(); }
+  else if (act === "drop-slot") { ui.form.slots = ui.form.slots.filter((slot) => slot.id !== el.dataset.id); render(); }
+  else if (act === "clear-day") { ui.form.slots = ui.form.slots.filter((slot) => slot.weekday !== ui.form.openDay); ui.form.openDay = null; render(); }
+  else if (act === "save-group") {
+    ui.form.name = document.getElementById("grp-name")?.value || ui.form.name;
+    ui.form.age_label = document.getElementById("grp-age")?.value || ui.form.age_label;
+    const lessons = ui.form.slots.filter((slot) => slot.starts_at && slot.title.trim()).map(({ weekday, starts_at, title }) => ({ weekday, starts_at, title }));
+    if (ui.id === "new") {
+      const created = { id: nid("g"), name: ui.form.name, branch_id: ui.form.branch_id, age_label: ui.form.age_label, schedule_note: "", lessons };
+      db.groups.push(created);
+      ui.id = created.id;
+      loadGroup(created.id);
+    } else {
+      Object.assign(groupOf(ui.id), { name: ui.form.name, branch_id: ui.form.branch_id, age_label: ui.form.age_label, lessons });
+      ui.form.saved = true;
+    }
+    notify("Сохранено");
+    render();
+  } else if (act === "del-group") {
+    if (!window.confirm("Удалить группу?")) return;
+    db.groups = db.groups.filter((item) => item.id !== ui.id);
+    go("groups");
+  } else if (act === "mark") {
+    const key = `${el.dataset.child}|${el.dataset.date}|${el.dataset.at}`;
+    const next = el.dataset.val === "true";
+    const cell = db.marks[key] || { present: null, reason: "", note: "", decision: "", title: "" };
+    cell.present = cell.present === next ? null : next;
+    db.marks[key] = cell;
+    render();
+  } else if (act === "fill") {
+    kidsIn(ui.groupId).forEach((child) => {
+      const key = `${child.id}|${el.dataset.date}|${el.dataset.at}`;
+      const cell = db.marks[key] || { present: null, reason: "", note: "", decision: "", title: "" };
+      if (cell.present == null) cell.present = true;
+      db.marks[key] = cell;
+    });
+    render();
+  } else if (act === "decide") {
+    const cell = db.marks[`${el.dataset.child}|${el.dataset.date}|${el.dataset.at}`];
+    cell.decision = cell.decision === el.dataset.val ? "" : el.dataset.val;
+    render();
+  } else if (act === "save-program") {
+    const dirs = [...document.querySelectorAll("[data-dir]")].reduce((map, input) => {
+      const index = Number(input.dataset.dir);
+      map[index] = map[index] || {};
+      map[index][input.dataset.field] = input.value;
+      return map;
+    }, []);
+    if (ui.id === "new") {
+      const [year, month] = (document.getElementById("prog-month")?.value || "2026-12").split("-").map(Number);
+      db.programs.unshift({ id: nid("p"), group_id: ui.form.group_id || "g1", year, month, filled: dirs.some((line) => line.topics || line.goal), directions: dirs });
+      go("programs");
+    } else {
+      const program = db.programs.find((item) => item.id === ui.id);
+      program.directions = dirs;
+      program.filled = dirs.some((line) => line.topics || line.goal);
+      notify("Сохранено");
+      render();
+    }
+  } else if (act === "create-report") {
+    const [year, month] = (document.getElementById("rep-month")?.value || "2026-11").split("-").map(Number);
+    const created = { id: nid("r"), group_id: ui.form.group_id || "g1", year, month, sent: false, studied: "", focus: "", homework: "", lines: {} };
+    db.reports.unshift(created);
+    go("report", created.id);
+  } else if (act === "save-report") {
+    const report = db.reports.find((item) => item.id === ui.id);
+    report.studied = document.getElementById("rep-studied").value;
+    report.focus = document.getElementById("rep-focus").value;
+    report.homework = document.getElementById("rep-homework").value;
+    document.querySelectorAll("[data-line]").forEach((input) => { report.lines[input.dataset.line] = input.value; });
+    notify("Сохранено");
+    render();
+  } else if (act === "send-report") {
+    db.reports.find((item) => item.id === ui.id).sent = true;
+    notify("Отчёт у родителей");
+    render();
+  } else if (act === "upload-video") {
+    const date = document.getElementById("vid-date")?.value;
+    const file = document.getElementById("vid-file")?.files?.[0];
+    if (!file || !date) { notify("Нужны дата и файл"); return; }
+    db.videos.unshift({ id: nid("v"), group_id: ui.groupId, date, name: file.name });
+    ui.videoFile = "";
+    ui.videoDate = "";
+    notify("Загружено");
+    render();
+  } else if (act === "del-video") { db.videos = db.videos.filter((item) => item.id !== el.dataset.id); render(); }
+  else if (act === "album-kind") { ui.albumKind = el.dataset.kind; render(); }
+  else if (act === "create-album") {
+    const title = document.getElementById("alb-title")?.value.trim();
+    const date = document.getElementById("alb-date")?.value;
+    if (!title || !date) { notify("Нужны название и дата"); return; }
+    const created = { id: nid("a"), kind: ui.albumKind, group_id: ui.groupId, child_id: ui.form.child_id || "", title, date, photos: [] };
+    db.albums.unshift(created);
+    ui.albumOpen = created.id;
+    ui.albumTitle = "";
+    ui.albumDate = "";
+    render();
+  } else if (act === "open-album") { ui.albumOpen = ui.albumOpen === el.dataset.id ? "" : el.dataset.id; render(); }
+  else if (act === "del-album") { db.albums = db.albums.filter((item) => item.id !== el.dataset.id); if (ui.albumOpen === el.dataset.id) ui.albumOpen = ""; render(); }
+  else if (act === "del-photo") {
+    const album = db.albums.find((item) => item.id === el.dataset.album);
+    album.photos = album.photos.filter((photo) => photo.id !== el.dataset.id);
+    render();
+  } else if (act === "preview") { ui.preview = el.dataset.url; render(); }
+  else if (act === "close-preview") { ui.preview = ""; render(); }
+  else if (act === "create-event") {
+    const created = { id: nid("e"), kind: ui.form.kind || "show", title: document.getElementById("ev-title")?.value || "Событие", date: document.getElementById("ev-date")?.value || "2026-12-20", starts_at: "17:00", place: "Филиал Центр", price: 0, scope: "school", group_id: "", branch_id: "b1", description: "", requests: [] };
+    db.events.unshift(created);
+    go("event", created.id);
+  } else if (act === "save-event") {
+    const eventCard = db.events.find((item) => item.id === ui.id);
+    eventCard.place = document.getElementById("ev-place").value;
+    eventCard.starts_at = document.getElementById("ev-time").value;
+    eventCard.price = Number(document.getElementById("ev-price").value) || 0;
+    eventCard.description = document.getElementById("ev-text").value;
+    notify("Сохранено");
+    render();
+  } else if (act === "signup") {
+    const eventCard = db.events.find((item) => item.id === ui.id);
+    const row = eventCard.requests.find((item) => item.id === el.dataset.id);
+    row.status = row.status === "registered" ? "requested" : "registered";
+    render();
+  } else if (act === "save-teacher") {
+    const payload = { name: document.getElementById("tch-name").value, teaches: document.getElementById("tch-teaches").value, about: document.getElementById("tch-about").value, groups: [] };
+    if (ui.id === "new") { payload.id = nid("t"); db.teachers.push(payload); go("teachers"); }
+    else { Object.assign(db.teachers.find((item) => item.id === ui.id), payload); notify("Сохранено"); render(); }
+  } else if (act === "save-contact") {
+    const payload = { name: document.getElementById("ct-name").value, reach: document.getElementById("ct-reach").value, topics: document.getElementById("ct-topics").value };
+    if (ui.id === "new") { payload.id = nid("k"); db.contacts.push(payload); go("teachers"); }
+    else { Object.assign(db.contacts.find((item) => item.id === ui.id), payload); notify("Сохранено"); render(); }
+  } else if (act === "rate-open") { ui.ratePicked = el.dataset.id; render(); }
+  else if (act === "rate-close") { ui.ratePicked = ""; render(); }
+  else if (act === "rate-done") {
+    const row = db.ratings.find((item) => item.id === el.dataset.id);
+    row.task_open = false;
+    ui.ratePicked = ui.ratePicked === row.id ? row.id : ui.ratePicked;
+    notify("Звонок закрыт");
+    render();
+  } else if (act === "show-paid") { ui.showPaid = el.dataset.val === "1"; render(); }
+  else if (act === "plans") { ui.plansOpen = true; render(); }
+  else if (act === "plans-close") { ui.plansOpen = false; render(); }
+  else if (act === "pass-open") { ui.passDraft = el.dataset.id; render(); }
+  else if (act === "pass-close") { ui.passDraft = null; render(); }
+  else if (act === "pass-paid") {
+    const child = db.passes[ui.groupId][ui.passDraft];
+    child.paid = el.dataset.val === "null" ? null : el.dataset.val === "true";
+    render();
+  } else if (act === "pass-save") {
+    const child = db.passes[ui.groupId][ui.passDraft];
+    child.due_on = document.getElementById("pass-due").value;
+    child.lessons_note = document.getElementById("pass-note").value;
+    ui.passDraft = null;
+    notify("Сохранено");
+    render();
+  } else if (act === "confirm-pass") {
+    const row = db.passRequests.find((item) => item.id === el.dataset.id);
+    row.status = "done";
+    db.passes[row.group_id][row.child_id].paid = true;
+    notify("Заявка подтверждена");
+    render();
+  } else if (act === "create-point") {
+    const created = { id: nid("pt"), group_id: ui.form.group_id || "g1", code: ui.form.code || "C", season: "2026/2027", date: document.getElementById("pt-date")?.value || "2026-05-20", sent: false, scores: {} };
+    db.points.unshift(created);
+    go("point", created.id);
+  } else if (act === "score") {
+    const point = db.points.find((item) => item.id === ui.id);
+    point.scores[el.dataset.child] = point.scores[el.dataset.child] || {};
+    const current = point.scores[el.dataset.child][el.dataset.skill];
+    const next = Number(el.dataset.score);
+    point.scores[el.dataset.child][el.dataset.skill] = current === next ? undefined : next;
+    render();
+  } else if (act === "send-point") {
+    db.points.find((item) => item.id === ui.id).sent = true;
+    notify("Точка у родителей");
+    render();
+  } else if (act === "save-rubric") {
+    document.querySelectorAll("[data-skill]").forEach((input) => {
+      const skill = db.skills.find((item) => item.code === input.dataset.skill);
+      if (skill) skill.name = input.value;
+    });
+    notify("Сохранено");
+    render();
+  } else if (act === "save-branch") {
+    const payload = { name: document.getElementById("br-name").value, address: document.getElementById("br-address").value };
+    if (ui.id === "new") { payload.id = nid("b"); db.branches.push(payload); go("branches"); }
+    else { Object.assign(branchOf(ui.id), payload); notify("Сохранено"); render(); }
+  }
+});
+
+document.getElementById("root").addEventListener("input", (event) => {
+  const target = event.target;
+  if (target.id === "search") { ui.query = target.value; render(); document.getElementById("search")?.focus(); const el = document.getElementById("search"); if (el) el.setSelectionRange(el.value.length, el.value.length); }
+  if (target.id === "login-user") ui.loginUser = target.value;
+  if (target.id === "login-pass") ui.loginPass = target.value;
+  if (target.id === "vid-file") { ui.videoFile = target.files?.[0]?.name || ""; render(); }
+  if (target.dataset.slot) {
+    const slot = ui.form.slots.find((item) => item.id === target.dataset.slot);
+    if (slot) slot[target.dataset.field] = target.value;
+  }
+});
+
+window.addEventListener("popstate", () => { applyHash(); render(); });
+window.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  ui.select = "";
+  ui.preview = "";
+  ui.ratePicked = "";
+  ui.passDraft = null;
+  ui.plansOpen = false;
+  render();
+});
+
+if (!location.hash) history.replaceState({ demo: 1 }, "", "#/families");
+applyHash();
+render();
+
+  </script>
+</body>
+</html>

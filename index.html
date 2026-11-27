@@ -1,0 +1,1458 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f2f7">
+  <title>Daisy — демо кабинета родителя</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  color-scheme: light;
+  --bg: #f3f2f7;
+  --surface: #ffffff;
+  --surface-2: #ebe9f2;
+  --line: #e2e0ea;
+  --ink: #1b1930;
+  --ink-2: #55526a;
+  --ink-3: #8b889d;
+  --daisy: #f7c948;
+  --daisy-soft: #fdf1c9;
+  --daisy-ink: #3b2e00;
+  --ok: #1d8f53;
+  --bad: #c43d33;
+  --shadow: 0 1px 2px rgba(27, 25, 48, 0.05), 0 6px 18px rgba(27, 25, 48, 0.06);
+  --display: "Unbounded", "Onest", system-ui, sans-serif;
+  --body: "Onest", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #111018;
+    --surface: #1b1a25;
+    --surface-2: #262433;
+    --line: #2e2b3c;
+    --ink: #f2f1f8;
+    --ink-2: #b7b4c8;
+    --ink-3: #86839a;
+    --daisy: #f5c63f;
+    --daisy-soft: #3a3115;
+    --daisy-ink: #f8e7a2;
+    --ok: #45c983;
+    --bad: #f07a70;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.45;
+}
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3, p { margin: 0; }
+.d { font-family: var(--display); font-weight: 600; letter-spacing: -0.01em; }
+.muted { color: var(--ink-3); }
+.sub { color: var(--ink-2); }
+.fine { font-size: 12.5px; color: var(--ink-3); }
+.fine.bad { color: var(--bad); }
+.label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.app {
+  max-width: 440px;
+  margin: 0 auto;
+  min-height: 100%;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 600px) {
+  body { background: var(--surface-2); }
+  .app { background: var(--bg); border-inline: 1px solid var(--line); min-height: 100vh; }
+}
+.top, .subtop {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+}
+.grow { flex: 1; min-width: 0; }
+.top h2, .subtop h2 { font-size: 17px; }
+.logo { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 600; font-size: 17px; }
+.logo svg { width: 28px; height: 28px; }
+.login .logo { font-size: 22px; }
+.login .logo svg { width: 44px; height: 44px; }
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; position: relative;
+  flex: none; line-height: 0;
+}
+.icon-btn.ask { color: var(--daisy-ink); }
+.icon-btn.ask svg { transform: translateY(1px); width: 24px; height: 24px; stroke-width: 1.35; }
+.icon-btn.ask .ask-bubble { fill: var(--daisy); stroke: var(--daisy-ink); }
+.bell-dot {
+  position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bad); box-shadow: 0 0 0 2px var(--bg);
+}
+.li.unread b { position: relative; }
+.li.unread b::after {
+  content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 8px;
+  border-radius: 50%; background: var(--daisy); vertical-align: middle;
+}
+.icon-btn svg { width: 22px; height: 22px; }
+.icon-btn:active, .kid-switch:active, .tab:active { transform: scale(0.96); }
+.kid-switch {
+  display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px;
+  border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-weight: 600; font-size: 14px;
+}
+.view { display: flex; flex-direction: column; gap: 16px; padding: 8px 16px 20px; }
+.page-title { font-size: 24px; padding-top: 8px; padding-bottom: 4px; line-height: 1.2; }
+.card, .list {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.card { padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.hero { display: flex; gap: 16px; align-items: center; padding: 6px 0 4px; }
+.hero .meta { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.hero h1 { font-size: 26px; line-height: 1.15; }
+.hero .sub, .hero .muted { line-height: 1.4; }
+.ph, .av {
+  display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 600;
+  background: radial-gradient(circle at 30% 25%, hsl(var(--h) 85% 82%), hsl(calc(var(--h) + 25) 55% 52%));
+}
+.ph { width: 112px; height: 112px; border-radius: 32px; font-size: 44px; }
+.portrait {
+  width: 84px; height: 84px; border-radius: 24px; flex: none; object-fit: cover;
+  display: grid; place-items: center; color: #fff; font-family: var(--display); font-weight: 600; font-size: 30px;
+  background: radial-gradient(circle at 30% 25%, hsl(var(--h) 85% 78%), hsl(calc(var(--h) + 28) 55% 48%));
+}
+.person-row { flex-direction: row; align-items: center; gap: 14px; width: 100%; text-align: left; }
+.person-row > div { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.person-row h3,
+.person-row .muted,
+.person-row p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--daisy-soft);
+  color: var(--daisy-ink);
+}
+.chip.ok { background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok); }
+.chip.bad { background: color-mix(in srgb, var(--bad) 16%, var(--surface)); color: var(--bad); }
+.name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.av { width: 26px; height: 26px; border-radius: 50%; font-size: 12px; flex: none; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.big { font-family: var(--display); font-size: 19px; font-weight: 600; line-height: 1.2; }
+.schedule { display: flex; flex-direction: column; gap: 12px; }
+.schedule-head { gap: 8px; }
+.schedule-head h3 { font-size: 22px; line-height: 1.15; }
+.schedule-note { white-space: pre-line; }
+.place-line { display: flex; align-items: flex-start; gap: 8px; }
+.place-line svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+.day-mark {
+  width: 52px; flex: none; background: var(--surface-2); border-radius: 14px;
+  padding: 8px 0; text-align: center; font-family: var(--display); font-weight: 600; font-size: 16px;
+}
+.lesson-time { display: block; font-variant-numeric: tabular-nums; }
+.list { overflow: hidden; }
+.li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; width: 100%; text-align: left; }
+.li + .li { border-top: 1px solid var(--line); }
+.li small { display: block; color: var(--ink-3); font-size: 13px; }
+.chev { color: var(--ink-3); }
+.chev svg { width: 18px; height: 18px; }
+.seg { display: flex; background: var(--surface-2); border-radius: 14px; padding: 4px; gap: 4px; }
+.seg span, .seg button { flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--ink-3); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); }
+.months { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-inline: -16px; padding: 2px 16px 4px; }
+.months::-webkit-scrollbar { display: none; }
+.mo {
+  flex: none; width: 58px; padding: 8px 0 7px; border-radius: 14px; background: var(--surface);
+  border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 3px; font-weight: 600;
+}
+.mo small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+.mo[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.mo[aria-pressed="true"] small { color: var(--bg); opacity: 0.75; }
+.mo.now { border-color: var(--daisy); border-width: 2px; }
+.program-title { font-size: 20px; }
+.program-card { gap: 8px; }
+.dir { gap: 10px; }
+.dir-head { display: flex; align-items: center; gap: 10px; }
+.dir-head h3 { font-size: 17px; }
+.dir-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; margin-top: 5px; }
+.dir-head .dir-dot { margin-top: 0; }
+.dir-line { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
+.dir-line b { font-weight: 600; }
+.kv { display: grid; grid-template-columns: 92px 1fr; gap: 4px 10px; font-size: 14px; }
+.kv dt { color: var(--ink-3); }
+.kv dd { margin: 0; white-space: pre-wrap; }
+.report-card {
+  position: relative; overflow: hidden; isolation: isolate;
+  background: var(--daisy); color: var(--daisy-ink); box-shadow: none;
+  padding-right: 72px;
+}
+.report-card h3 { font-family: var(--display); font-size: 22px; line-height: 1.15; }
+.report-card p { color: var(--daisy-ink); opacity: 0.82; }
+.report-card .chip {
+  background: #1a1710; color: #f3d78a; width: fit-content; margin-bottom: 6px;
+  font-family: var(--display); font-size: 12px; font-weight: 600;
+  padding: 5px 12px; letter-spacing: 0.01em;
+}
+.report-bloom {
+  position: absolute; right: -16px; bottom: -20px; width: 96px; height: 96px;
+  pointer-events: none; z-index: 0;
+}
+.report-card > :not(.report-bloom) { position: relative; z-index: 1; }
+.report-index { display: flex; flex-direction: column; gap: 12px; }
+.report-month {
+  background: var(--surface); border-radius: 22px; padding: 16px 16px 14px;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 4px;
+}
+.report-month.new { background: var(--daisy); color: var(--daisy-ink); }
+.report-month.new .label, .report-month.new .muted { color: var(--daisy-ink); opacity: 0.72; }
+.report-month h2 { font-family: var(--display); font-size: 26px; line-height: 1.05; }
+.report { display: flex; flex-direction: column; gap: 12px; }
+.report-lead { padding: 2px 2px 0; }
+.report-lead h1 { font-size: 26px; line-height: 1.1; margin-top: 4px; }
+.report-block {
+  background: var(--surface); border-radius: 22px; padding: 16px;
+  box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px;
+}
+.report-block h4 {
+  margin: 0; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 700;
+}
+.report-block p { margin: 0; white-space: pre-wrap; }
+.report-block ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.report-block.accent { background: var(--daisy); color: var(--daisy-ink); box-shadow: none; }
+.report-block.accent h4 { color: var(--daisy-ink); opacity: 0.62; }
+.report-note { padding: 0 4px; }
+.event-list { display: flex; flex-direction: column; gap: 12px; }
+.event-card h1, .event-card h2 { font-size: 22px; line-height: 1.15; }
+.event-text { white-space: pre-wrap; }
+.event-status { font-weight: 600; }
+.event-form { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+.choice-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+.choice small { font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+.choice[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.choice[aria-pressed="true"] small { color: inherit; opacity: 0.72; }
+.event-past-title { font-size: 18px; padding: 4px 2px 0; }
+.head-row { display: flex; align-items: center; padding: 6px 4px 0; }
+.head-row a { font-weight: 600; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 18px; border-radius: 14px; font-weight: 600; background: var(--ink); color: var(--bg); width: 100%;
+  transition: transform 0.12s ease, filter 0.12s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active:not(:disabled) { transform: translateY(1px) scale(0.98); }
+.btn.ghost { background: var(--surface-2); color: var(--ink); }
+.btn:disabled { opacity: 0.45; }
+.btn.busy:disabled { opacity: 1; cursor: progress; }
+.btn.busy::before {
+  content: "";
+  width: 15px; height: 15px; flex: none; border-radius: 50%;
+  border: 2px solid currentColor; border-right-color: transparent;
+  animation: spin 0.7s linear infinite;
+}
+.btn.done { background: var(--ok); color: #fff; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field span { font-size: 13px; color: var(--ink-3); font-weight: 500; }
+.input { background: var(--surface-2); border: 1px solid transparent; border-radius: 12px; padding: 12px 14px; width: 100%; }
+.input:focus { outline: none; border-color: var(--ink); }
+.code { display: grid; grid-template-columns: repeat(4, 56px); gap: 10px; }
+.code input { text-align: center; font-size: 24px; font-weight: 600; padding: 12px 0; }
+.steps { display: flex; gap: 6px; }
+.steps i { height: 4px; flex: 1; border-radius: 2px; background: var(--line); }
+.steps i.on { background: var(--ink); }
+.login {
+  position: fixed; inset: 0; z-index: 70; background: var(--bg); display: flex; justify-content: center; overflow: auto;
+}
+.login .in {
+  width: min(100%, 440px); display: flex; flex-direction: column; gap: 18px; justify-content: center; min-height: 100%;
+  padding: 32px 24px;
+}
+.login h1 { font-size: 24px; line-height: 1.2; }
+.linkish { font-size: 14px; font-weight: 600; }
+.tabs {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 440px); z-index: 25;
+  background: var(--surface); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.tab { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10.5px; font-weight: 500; color: var(--ink-3); padding: 4px 0; position: relative; }
+.tab svg { width: 23px; height: 23px; }
+.tab.active { color: var(--ink); font-weight: 600; }
+.tab.active::before { content: ""; position: absolute; top: -6px; width: 22px; height: 3px; border-radius: 0 0 3px 3px; background: var(--daisy); }
+.overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; }
+.overlay.center { align-items: center; padding: 20px; }
+.scrim { position: absolute; inset: 0; background: rgba(20, 18, 36, 0.45); }
+.sheet {
+  position: relative; width: min(100%, 440px); background: var(--bg); border-radius: 24px 24px 0 0;
+  padding: 10px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 14px;
+}
+.grab { width: 40px; height: 5px; border-radius: 3px; background: var(--line); align-self: center; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.people { display: flex; flex-direction: column; gap: 12px; }
+.person-sheet {
+  position: relative;
+  width: min(100%, 360px);
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 24px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  max-height: min(82vh, 640px);
+  overflow: auto;
+}
+.person-sheet-face { width: 112px; height: 112px; border-radius: 32px; font-size: 44px; }
+.person-sheet-text { white-space: pre-wrap; text-align: left; width: 100%; }
+.person-sheet-reach { font-weight: 700; color: var(--ink); }
+.video-feed { display: flex; flex-direction: column; gap: 12px; }
+.video-feed video { width: 100%; border-radius: 16px; background: #14121a; }
+.progress-feed { display: flex; flex-direction: column; gap: 14px; }
+.points { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pt {
+  background: var(--surface); border-radius: 16px; padding: 10px 12px; box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.pt b { font-family: var(--display); font-size: 20px; line-height: 1.1; }
+.pt small { font-size: 12px; color: var(--ink-3); line-height: 1.3; }
+.pt.wait { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
+.pt.wait b { color: var(--ink-3); }
+.compare-card { gap: 10px; }
+.compare-card h3 { font-size: 17px; }
+.compare-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.grew {
+  flex: none; background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok);
+  font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+}
+.legend { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 18px; height: 8px; border-radius: 4px; display: inline-block; }
+.legend i.was { background: var(--line); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.legend i.now { background: var(--daisy); }
+.skill-board { gap: 0; padding: 8px 16px 14px; }
+.skill-row { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; }
+.skill-row + .skill-row { border-top: 1px solid var(--line); }
+.skill-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.skill-top b { display: block; font-size: 16px; }
+.skill-top small { display: block; margin-top: 2px; color: var(--ink-3); font-size: 13px; font-weight: 500; }
+.skill-change { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; padding-top: 2px; }
+.skill-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.skill-bar i { height: 8px; border-radius: 4px; background: var(--surface-2); }
+.skill-bar i.was { background: var(--line); box-shadow: inset 0 0 0 1.5px var(--ink-3); }
+.skill-bar i.on { background: var(--daisy); box-shadow: none; }
+.skill-meaning { margin: 0; }
+.diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.diag-tile {
+  position: relative; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; color: #fff;
+  display: flex; align-items: flex-end; padding: 10px; font-weight: 600; text-align: left;
+}
+.diag-tile b { position: relative; z-index: 1; font-size: 14px; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35); }
+.diag-play {
+  position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; margin: -21px 0 0 -21px;
+  border-radius: 50%; background: rgba(255, 255, 255, 0.92); color: #1b1a25;
+  display: grid; place-items: center;
+}
+.diag-play svg { width: 16px; height: 16px; margin-left: 2px; }
+.diag-tile video { position: absolute; inset: 0; width: 100%; height: 100%; background: #14121a; }
+.point-note { gap: 12px; }
+.point-note h2 { font-size: 20px; line-height: 1.2; }
+.point-note h4 {
+  margin: 0; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 700;
+}
+.point-note p { margin: 4px 0 0; white-space: pre-wrap; }
+.point-note section + section { margin-top: 4px; }
+.consent-row { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+.consent-row .muted { margin-top: 4px; }
+.switch {
+  width: 48px; height: 30px; border-radius: 999px; border: 0; background: var(--surface-2); position: relative; flex: none;
+}
+.switch span {
+  position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff;
+  transition: left 0.15s ease;
+}
+.switch[aria-checked="true"] { background: var(--daisy); }
+.switch[aria-checked="true"] span { left: 21px; }
+.switch:disabled { opacity: 0.6; }
+.cal {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 16px 12px 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cal-head, .cal-title { display: flex; align-items: center; gap: 4px; }
+.cal-head { justify-content: space-between; padding: 0 6px; }
+.cal-title h2 { font-family: var(--display); font-size: 22px; line-height: 1; }
+.cal-title button { width: 28px; height: 28px; border-radius: 50%; color: var(--ink-2); font-size: 22px; line-height: 1; }
+.cal-title button:disabled { opacity: 0.28; }
+.cal-score { color: var(--ink-3); font-weight: 600; font-size: 14px; }
+.cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+.cal-week span { text-align: center; font-size: 12px; font-weight: 600; color: var(--ink-3); padding-bottom: 2px; }
+.cal-grid span, .cal-grid button {
+  aspect-ratio: 1;
+  margin: 3px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+.cal-grid .num { color: var(--ink-3); font-weight: 600; }
+.cal-grid button.wait { background: var(--surface-2); color: var(--ink-2); }
+.cal-grid button.here { background: #d9f5e4; color: #146b3a; }
+.cal-grid button.miss { background: #e24b4b; color: #fff; }
+.cal-grid button.mixed { background: var(--daisy); color: var(--daisy-ink); }
+.cal-grid button.picked { box-shadow: inset 0 0 0 2px var(--ink); }
+.cal-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 4px 0;
+  padding: 12px 12px 12px 14px;
+  border-radius: 16px;
+  background: #fde8e6;
+  color: #3a2222;
+}
+.cal-note div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.cal-note small { color: #8a5a56; font-size: 13px; }
+.cal-note button {
+  margin-left: auto;
+  flex: none;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.cal-detail { display: flex; flex-direction: column; gap: 8px; scroll-margin: 16px; }
+.cal-detail > b { padding: 2px 4px 0; }
+.lesson-block {
+  background: var(--surface-2);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.lesson-block p { margin: 0; }
+.lesson-block.here { background: #d9f5e4; }
+.lesson-block.miss { background: #fde8e6; }
+.lesson-block > button {
+  align-self: flex-start;
+  margin-top: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+.reason-form { display: flex; flex-direction: column; gap: 10px; }
+.reason-form .seg { flex-wrap: wrap; }
+.reason-form .seg button { flex: 1 1 30%; font-size: 13px; }
+.reason-form textarea { resize: vertical; }
+.rate-form { display: flex; flex-direction: column; gap: 14px; }
+.rate-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.rate-scale button {
+  aspect-ratio: 1; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow);
+  font-family: var(--display); font-size: 22px; font-weight: 600;
+}
+.rate-scale button[aria-pressed="true"] { background: var(--daisy); color: var(--daisy-ink); box-shadow: none; }
+.rate-done { text-align: center; padding: 28px 16px; gap: 8px; }
+.rate-done .big { font-size: 56px; line-height: 1; }
+.album-grid { display: flex; flex-direction: column; gap: 12px; }
+.album-card {
+  display: grid; grid-template-columns: 84px 1fr; gap: 12px; align-items: center;
+  text-align: left; background: var(--surface); border-radius: 20px; box-shadow: var(--shadow); padding: 10px;
+}
+.album-card img, .album-fallback { width: 84px; height: 84px; object-fit: cover; border-radius: 16px; background: var(--surface-2); }
+.album-card b { display: block; font-size: 16px; }
+.album-card small { display: block; color: var(--ink-3); font-size: 13px; margin-top: 4px; }
+.album-open { display: flex; flex-direction: column; gap: 12px; }
+.back-text { align-self: flex-start; color: var(--ink-2); font-weight: 600; }
+.shot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.shot { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 1; background: var(--surface-2); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot-heart { position: absolute; right: 6px; bottom: 4px; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); font-size: 16px; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 40; background: rgba(16, 12, 18, 0.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 16px;
+}
+.lightbox img { max-width: min(100%, 920px); max-height: calc(100vh - 140px); object-fit: contain; border-radius: 12px; }
+.lightbox-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: min(100%, 920px); color: #fff; }
+.lightbox-bar button, .lightbox-bar a { color: #fff; font-weight: 700; }
+.lightbox-bar button.loved { color: #ffd36a; }
+@media (prefers-color-scheme: dark) {
+  .cal-grid button.here { background: #163528; color: #8ee0b0; }
+  .cal-grid button.miss { background: #a33b36; color: #fff; }
+  .cal-note { background: #3a2424; color: #f6e4e2; }
+  .cal-note small { color: #d7aaa6; }
+  .lesson-block.here { background: #163528; }
+  .lesson-block.miss { background: #3a2424; }
+}
+
+.fake-video {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 16px;
+  background: #14121a;
+  color: #f4f1ea;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 16px;
+  gap: 6px;
+}
+.fake-video b { font-family: var(--display); font-weight: 600; }
+.diag-tile .fake-video { border-radius: 0; aspect-ratio: auto; height: 100%; }
+
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+const TODAY = "2026-11-27";
+const WEEKDAYS = ["понедельник", "вторник", "среда", "четверг", "пятница", "суббота", "воскресенье"];
+const DAY_SHORT = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+const MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+const MONTH_SHORT = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+const IN_MONTH = { Январь: "январе", Февраль: "феврале", Март: "марте", Апрель: "апреле", Май: "мае", Июнь: "июне", Июль: "июле", Август: "августе", Сентябрь: "сентябре", Октябрь: "октябре", Ноябрь: "ноябре", Декабрь: "декабре" };
+const DIRECTION_COLORS = {
+  "дефиле": "hsl(330 70% 60%)",
+  "фото": "hsl(205 70% 55%)",
+  "актёрское мастерство": "hsl(35 85% 55%)",
+  "актерское мастерство": "hsl(35 85% 55%)",
+  "класс коммуникаций": "hsl(150 50% 45%)",
+};
+const PLANS = [
+  { id: "eight", name: "8 занятий", details: "2 раза в неделю", terms: [{ months: 1, price: 6400 }, { months: 3, price: 18000 }, { months: 6, price: 33600 }] },
+  { id: "open", name: "Безлимит", details: "все направления группы", terms: [{ months: 1, price: 8900 }, { months: 3, price: 24900 }] },
+];
+const TEACHERS = [
+  { id: "t1", name: "Алина Соколова", teaches: "Дефиле", about: "Ведёт дефиле в «Ромашках» и «Подсолнухах». На занятии смотрит осанку, шаг и как ребёнок держит взгляд." },
+  { id: "t2", name: "Марк Левин", teaches: "Актёрское мастерство", about: "Разбирает этюды и помогает говорить громче, не торопясь. На фотосессии подсказывает, куда смотреть." },
+];
+const CONTACTS = [
+  { id: "c1", name: "Администратор филиала", reach: "+7 343 200-00-11", topics: "Расписание, пропуски, оплата и запись на мероприятия." },
+  { id: "c2", name: "Методист Daisy", reach: "metodist@daisy.demo", topics: "Программа месяца, отчёты и точки прогресса." },
+];
+const ICONS = {
+  home: '<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  learn: '<path d="M2 6.5 12 3l10 3.5L12 10z"/><path d="M6 8.3V14c0 1.7 2.7 3 6 3s6-1.3 6-3V8.3"/><path d="M22 6.5V12"/>',
+  progress: '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M21 20H3"/>',
+  gallery: '<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/>',
+  events: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  more: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  bell: '<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  back: '<path d="m15 5-7 7 7 7"/>',
+  chev: '<path d="m9 5 7 7-7 7"/>',
+  chat: '<path class="ask-bubble" d="M21 12a8.5 8.5 0 0 1-12.2 7.6L4.5 21l1.2-4.1A8.5 8.5 0 1 1 21 12Z"/><path d="M9 11h6M9 14h4"/>',
+};
+const TILE = {
+  "defile-A": "linear-gradient(160deg, #7a5cff 0%, #2d1d78 100%)",
+  "defile-B": "linear-gradient(160deg, #e56aaa 0%, #7a245c 100%)",
+  "card-A": "linear-gradient(160deg, #3dcec8 0%, #145e78 100%)",
+  "card-B": "linear-gradient(160deg, #c6d84a 0%, #5b7a18 100%)",
+};
+
+const ui = {
+  loggedIn: true,
+  childId: "sofia",
+  screen: "home",
+  learnTab: "program",
+  programId: "2026-11",
+  section: "",
+  albumId: null,
+  shot: null,
+  eventId: null,
+  picked: null,
+  reasonKey: "",
+  sheet: null,
+  personId: null,
+  loginStep: 0,
+  pushOn: false,
+  rating: null,
+  rateScore: null,
+  planId: "eight",
+  planMonths: 1,
+  diag: "",
+  videoOpen: "",
+  draft: { phone: "", code: ["", "", "", ""], eventNote: "", rateComment: "", reasonNote: "", reason: "" },
+};
+
+function pad(n) { return String(n).padStart(2, "0"); }
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+}
+function hue(name) {
+  let value = 0;
+  for (const char of name) value = (value * 33 + char.charCodeAt(0)) % 360;
+  return value;
+}
+function directionColor(name) {
+  return DIRECTION_COLORS[name.trim().toLowerCase()] ?? `hsl(${hue(name)} 55% 46%)`;
+}
+function icon(name) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+}
+function daisyMark() {
+  const petals = [0, 45, 90, 135, 180, 225, 270, 315].map((angle) => `<ellipse cx="20" cy="9" rx="5" ry="8.5" fill="var(--surface)" stroke="var(--line)" stroke-width="1" transform="rotate(${angle} 20 20)"/>`).join("");
+  return `<svg viewBox="0 0 40 40" aria-hidden="true">${petals}<circle cx="20" cy="20" r="6.5" fill="var(--daisy)"/></svg>`;
+}
+function daisyBloom() {
+  const petals = [0, 45, 90, 135, 180, 225, 270, 315].map((angle) => `<ellipse cx="20" cy="8.5" rx="5.2" ry="9" fill="#f8e7a8" transform="rotate(${angle} 20 20)"/>`).join("");
+  return `<svg class="report-bloom" viewBox="0 0 40 40" aria-hidden="true">${petals}<circle cx="20" cy="20" r="6.2" fill="#e2ae2a"/></svg>`;
+}
+function money(value) {
+  if (value === 0) return "бесплатно";
+  return `${value.toLocaleString("ru-RU")} ₽`;
+}
+function monthsLabel(count) {
+  const ten = count % 10;
+  const hundred = count % 100;
+  if (ten === 1 && hundred !== 11) return `${count} месяц`;
+  if (ten >= 2 && ten <= 4 && (hundred < 12 || hundred > 14)) return `${count} месяца`;
+  return `${count} месяцев`;
+}
+function absenceLine(count) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  const word = mod10 === 1 && mod100 !== 11 ? "пропуск" : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? "пропуска" : "пропусков";
+  return `${count} ${word}`;
+}
+function grewLabel(count) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  const word = mod10 === 1 && mod100 !== 11 ? "навык вырос" : mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14) ? "навыка выросли" : "навыков выросли";
+  return `${count} ${word}`;
+}
+function dateLabel(iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+}
+function weekdayName(iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  return WEEKDAYS[(new Date(year, month - 1, day).getDay() + 6) % 7];
+}
+function cellsOf(year, month) {
+  const lead = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+  const count = new Date(year, month, 0).getDate();
+  const cells = Array.from({ length: lead }, () => null);
+  for (let day = 1; day <= count; day += 1) cells.push(day);
+  while (cells.length % 7) cells.push(null);
+  return cells;
+}
+function shotUrl(h, letter) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640"><defs><radialGradient id="g" cx="30%" cy="25%"><stop offset="0%" stop-color="hsl(${h} 85% 78%)"/><stop offset="100%" stop-color="hsl(${(h + 28) % 360} 55% 46%)"/></radialGradient></defs><rect width="640" height="640" fill="url(#g)"/><circle cx="320" cy="250" r="70" fill="rgba(255,255,255,.35)"/><text x="320" y="430" text-anchor="middle" font-size="120" font-family="sans-serif" fill="white">${letter}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+function buildDays(slots, overrides) {
+  const days = [];
+  for (const key of ["2026-10", "2026-11", "2026-12"]) {
+    const [year, month] = key.split("-").map(Number);
+    const count = new Date(year, month, 0).getDate();
+    for (let day = 1; day <= count; day += 1) {
+      const date = new Date(year, month - 1, day);
+      const slot = slots.find((item) => item.dow === date.getDay());
+      if (!slot) continue;
+      const iso = `${year}-${pad(month)}-${pad(day)}`;
+      const ahead = iso >= TODAY;
+      const extra = overrides[iso] || {};
+      days.push({
+        date: iso,
+        date_label: dateLabel(iso),
+        starts_at: slot.starts_at,
+        title: slot.title,
+        state: ahead ? "ahead" : "present",
+        reason: "",
+        reason_label: "",
+        note: "",
+        fileName: "",
+        ...extra,
+      });
+    }
+  }
+  return days;
+}
+
+let photoId = 1;
+function photos(specs) {
+  return specs.map(([h, letter, heart]) => ({ id: photoId++, h, letter, heart: Boolean(heart), url: shotUrl(h, letter) }));
+}
+
+const kids = {
+  sofia: {
+    id: "sofia",
+    first_name: "София",
+    group: "Ромашки",
+    age_label: "10–12 лет",
+    branch: "Центр",
+    address: "ул. Кирова, 18",
+    photo_video: true,
+    lessons: [
+      { day: "Вт", starts_at: "16:00", title: "Дефиле" },
+      { day: "Чт", starts_at: "16:00", title: "Актёрское мастерство" },
+    ],
+    next_lesson: { day: "Вт", date_label: "1 декабря", starts_at: "16:00", title: "Дефиле" },
+    reportOpened: false,
+    days: buildDays(
+      [{ dow: 2, starts_at: "16:00", title: "Дефиле" }, { dow: 4, starts_at: "16:00", title: "Актёрское мастерство" }],
+      { "2026-11-24": { state: "absent" }, "2026-10-13": { state: "absent", reason: "illness", reason_label: "Болезнь", note: "Температура, осталась дома" } },
+    ),
+    programs: [
+      { id: "2026-09", month_label: "Сентябрь", current: false, ahead: false, directions: programLines("знакомство со сценой", "свет и ракурс", "имя и представление", "как знакомиться") },
+      { id: "2026-10", month_label: "Октябрь", current: false, ahead: false, directions: programLines("походка по прямой", "портрет", "короткий этюд", "слушать собеседника") },
+      { id: "2026-11", month_label: "Ноябрь", current: true, ahead: false, directions: programLines("поворот и пауза", "серия из трёх кадров", "диалог на двоих", "говорить по очереди") },
+      { id: "2026-12", month_label: "Декабрь", current: false, ahead: true, directions: programLines("выход под музыку", "общий снимок группы", "новогодний этюд", "поздравление вслух") },
+    ],
+    videos: [{ id: "v1", date_label: "12 ноября" }, { id: "v2", date_label: "19 ноября" }],
+    albums: [
+      { id: "g1", title: "Группа «Ромашки», ноябрь", date_label: "19 ноября", kind: "group", photos: photos([[330, "С", true], [18, "С"], [200, "С"], [262, "С"], [48, "С"], [140, "С"]]) },
+      { id: "p1", title: "Фотосессия Софии", date_label: "2 октября", kind: "personal", photos: photos([[28, "С"], [210, "С"], [350, "С"]]) },
+    ],
+    events: [
+      { id: "battle", title: "Открытый батл", kind_label: "Батл", date_label: "12 декабря", starts_at: "12:00", place: "Филиал Центр", price: 1500, ahead: true, signup: "none", description: "Короткий выход на сцену: походка, пауза и финальный кадр. Состав собирает школа после заявок." },
+      { id: "shoot", title: "Осенняя фотосессия", kind_label: "Фотосессия", date_label: "18 октября", starts_at: "11:00", place: "Филиал Центр", price: 0, ahead: false, signup: "registered", description: "Съёмка группы уже прошла. Снимки лежат в галерее." },
+    ],
+    sub: {
+      current: { month_label: "Ноябрь", year: 2026, month: 11, paid: false, due_on: "2026-12-05", lessons_note: "8 занятий" },
+      history: [{ month_label: "Октябрь", year: 2026, month: 10, paid: true, lessons_note: "8 занятий" }],
+      request: null,
+    },
+    points: [
+      point("A", "Точка А", "12 сентября", [
+        ["posture", "Осанка", 2, "Педагог по дефиле", "Спина ровная на старте, к концу дорожки опускает плечи."],
+        ["step", "Шаг", 1, "Педагог по дефиле", "Шаг ещё короткий, темп плавает."],
+        ["look", "Взгляд", 2, "Педагог по дефиле", "Смотрит в зал, иногда опускает глаза."],
+        ["speech", "Речь", 1, "Педагог по актёрскому", "Говорит тихо, конец фразы пропадает."],
+      ], "Держит начало дорожки.", "Плечи и длина шага.", "Дойти до конца фразы, не ускоряясь."),
+      point("B", "Точка Б", "21 ноября", [
+        ["posture", "Осанка", 3, "Педагог по дефиле", "Плечи спокойные на всей дорожке."],
+        ["step", "Шаг", 2, "Педагог по дефиле", "Шаг ровнее, пауза в конце появилась."],
+        ["look", "Взгляд", 2, "Педагог по дефиле", "Взгляд стабильный, без скачка относительно сентября."],
+        ["speech", "Речь", 2, "Педагог по актёрскому", "Фразу слышно до последнего слова."],
+      ], "Поворот и пауза уже читаются.", "Длина шага под музыку.", "Собрать выход целиком, без подсказки."),
+    ],
+    notices: [
+      { id: "n1", title: "Новый отчёт за ноябрь", text: "Что проходили, что получается и задание на дом.", unread: true, screen: "report" },
+      { id: "n2", title: "Пропуск 24 ноября", text: "Укажите причину — школу это спросит в посещаемости.", unread: true, screen: "sub", section: "attendance" },
+    ],
+  },
+  mark: {
+    id: "mark",
+    first_name: "Марк",
+    group: "Подсолнухи",
+    age_label: "7–9 лет",
+    branch: "Центр",
+    address: "ул. Кирова, 18",
+    photo_video: true,
+    lessons: [{ day: "Сб", starts_at: "11:00", title: "Визитка" }],
+    next_lesson: { day: "Сб", date_label: "28 ноября", starts_at: "11:00", title: "Визитка" },
+    reportOpened: true,
+    days: buildDays([{ dow: 6, starts_at: "11:00", title: "Визитка" }], {}),
+    programs: [
+      { id: "2026-11", month_label: "Ноябрь", current: true, ahead: false, directions: programLines("стойка", "один кадр улыбки", "как тебя зовут", "здороваться первым") },
+      { id: "2026-12", month_label: "Декабрь", current: false, ahead: true, directions: programLines("поклон", "кадр с реквизитом", "стишок наизусть", "ждать своей очереди") },
+    ],
+    videos: [],
+    albums: [
+      { id: "p2", title: "Фотосессия Марка", date_label: "8 ноября", kind: "personal", photos: photos([[200, "М"], [120, "М"], [40, "М"], [280, "М"]]) },
+    ],
+    events: [
+      { id: "show", title: "Зимнее шоу", kind_label: "Шоу", date_label: "20 декабря", starts_at: "17:00", place: "Филиал Центр", price: 0, ahead: true, signup: "none", description: "Общий выход младших групп. Заявка ничего не списывает: место подтверждает школа." },
+    ],
+    sub: {
+      current: { month_label: "Ноябрь", year: 2026, month: 11, paid: true, due_on: "", lessons_note: "4 занятия" },
+      history: [{ month_label: "Октябрь", year: 2026, month: 10, paid: true, lessons_note: "4 занятия" }],
+      request: null,
+    },
+    points: [
+      point("A", "Точка А", "5 октября", [
+        ["posture", "Осанка", 1, "Педагог по дефиле", "Пока трудно стоять спокойно до конца счёта."],
+        ["speech", "Речь", 2, "Педагог по актёрскому", "Имя и возраст говорит уверенно."],
+      ], "Смело выходит к камере.", "Достоять до конца счёта.", "Добавить поклон без подсказки."),
+    ],
+    notices: [
+      { id: "n3", title: "Октябрь оплачен", text: "Школа отметила абонемент Марка.", unread: false, screen: "sub", section: "subscription" },
+    ],
+  },
+};
+
+function programLines(defile, photo, actor, talk) {
+  return [
+    { name: "Дефиле", topics: defile, goal: "Спокойный выход от кулисы до точки", can_do: "Повторить связку без счёта вслух" },
+    { name: "Фото", topics: photo, goal: "Понять, куда смотреть в кадре", can_do: "Собрать серию по команде фотографа" },
+    { name: "Актёрское мастерство", topics: actor, goal: "Договорить фразу до конца", can_do: "Сыграть короткий этюд с партнёром" },
+    { name: "Класс коммуникаций", topics: talk, goal: "Слышать очередь и отвечать по делу", can_do: "Представиться и задать один вопрос" },
+  ];
+}
+function point(code, label, date_label, scores, works, focus, goal) {
+  return {
+    code,
+    label,
+    date_label,
+    works,
+    focus,
+    goal,
+    scores: scores.map(([id, name, score, assessor, meaning]) => ({ code: id, name, score, assessor, meaning })),
+    videos: code === "C" ? [] : [{ kind: "defile" }, { kind: "card" }],
+  };
+}
+
+function child() { return kids[ui.childId]; }
+function summary(person) {
+  const days = person.days.filter((day) => day.date.startsWith("2026-11") && (day.state === "present" || day.state === "absent"));
+  return {
+    present: days.filter((day) => day.state === "present").length,
+    marked: days.length,
+    absences: days.filter((day) => day.state === "absent").length,
+    needs_reason: days.some((day) => day.state === "absent" && !day.reason),
+  };
+}
+function unread(person) { return person.notices.some((note) => note.unread); }
+function currentHash() {
+  if (!ui.loggedIn) return "#/login";
+  const id = ui.childId;
+  if (ui.screen === "sub") return `#/${id}/more/${ui.section}`;
+  if (ui.screen === "album") return `#/${id}/album/${ui.albumId}`;
+  if (ui.screen === "event") return `#/${id}/event/${ui.eventId}`;
+  if (ui.screen === "learn") return `#/${id}/learn/${ui.learnTab}`;
+  return `#/${id}/${ui.screen}`;
+}
+function applyHash() {
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  if (parts[0] === "login") {
+    ui.loggedIn = false;
+    ui.screen = "login";
+    return;
+  }
+  ui.loggedIn = true;
+  ui.childId = parts[0] === "mark" ? "mark" : "sofia";
+  const rest = parts[0] === "mark" || parts[0] === "sofia" ? parts.slice(1) : parts;
+  const [a, b] = rest;
+  ui.sheet = null;
+  ui.screen = a || "home";
+  ui.section = "";
+  ui.albumId = null;
+  ui.eventId = null;
+  if (a === "more" && b) { ui.screen = "sub"; ui.section = b; }
+  if (a === "album" && b) { ui.screen = "album"; ui.albumId = b; }
+  if (a === "event" && b) { ui.screen = "event"; ui.eventId = b; }
+  if (a === "learn") ui.learnTab = ["program", "reports", "videos"].includes(b) ? b : "program";
+  if (!["home", "learn", "report", "progress", "gallery", "album", "events", "event", "more", "sub", "notifications"].includes(ui.screen)) ui.screen = "home";
+}
+function navigate(patch) {
+  Object.assign(ui, patch);
+  ui.sheet = null;
+  const next = currentHash();
+  if (location.hash !== next) history.pushState({ demo: 1 }, "", next);
+  render();
+}
+function nested() {
+  return ui.screen === "sub" || ui.screen === "notifications" || ui.screen === "report" || ui.screen === "event";
+}
+function tabId() {
+  if (ui.screen === "report" || ui.screen === "learn") return "learn";
+  if (ui.screen === "album" || ui.screen === "gallery") return "gallery";
+  if (ui.screen === "event" || ui.screen === "events") return "events";
+  if (ui.screen === "sub" || ui.screen === "more" || ui.screen === "notifications") return ui.screen === "notifications" ? "" : "more";
+  if (ui.screen === "progress") return "progress";
+  if (ui.screen === "home") return "home";
+  return "";
+}
+function screenTitle() {
+  const titles = { report: "Отчёт за ноябрь", notifications: "Уведомления", attendance: "Посещаемость", subscription: "Абонемент", schedule: "Расписание и группа", teachers: "Педагоги", contacts: "Контакты школы", invite: "Пригласи друга", rate: "Оценка школы", profile: "Анкета", docs: "Документы и согласия" };
+  if (ui.screen === "report") return `Отчёт за ${child().id === "sofia" ? "ноябрь" : "октябрь"}`;
+  if (ui.screen === "event") return child().events.find((item) => item.id === ui.eventId)?.title || "Событие";
+  if (ui.screen === "sub") return titles[ui.section] || "Раздел";
+  return titles[ui.screen] || "Раздел";
+}
+
+function empty(title, text) {
+  return `<div class="card"><h3>${esc(title)}</h3><p class="muted">${esc(text)}</p></div>`;
+}
+function askBtn() {
+  return `<button class="icon-btn ask" type="button" data-act="sheet" data-sheet="support" aria-label="Задать вопрос" title="Задать вопрос">${icon("chat")}</button>`;
+}
+function header() {
+  if (nested()) {
+    return `<div class="subtop"><button class="icon-btn" type="button" data-act="back" aria-label="Назад">${icon("back")}</button><h2 class="grow">${esc(screenTitle())}</h2>${askBtn()}</div>`;
+  }
+  const person = child();
+  return `<header class="top"><a class="logo grow" href="#/${person.id}/home" data-act="nav" data-screen="home">${daisyMark()}<span>Daisy</span></a><button class="kid-switch" type="button" data-act="sheet" data-sheet="kids"><span class="av" style="--h:${hue(person.first_name)}">${esc(person.first_name.slice(0, 1))}</span>${esc(person.first_name)}</button><a class="icon-btn" href="#/${person.id}/notifications" data-act="nav" data-screen="notifications" aria-label="Уведомления">${icon("bell")}${unread(person) ? `<span class="bell-dot"></span>` : ""}</a>${askBtn()}</header>`;
+}
+function tabs() {
+  const current = tabId();
+  const items = [["home", "Главная", "home"], ["learn", "Обучение", "learn"], ["progress", "Прогресс", "progress"], ["gallery", "Галерея", "gallery"], ["events", "Мероприятия", "events"], ["more", "Ещё", "more"]];
+  return `<nav class="tabs" aria-label="Разделы">${items.map(([id, label, name]) => `<a class="tab${current === id ? " active" : ""}" href="#/${child().id}/${id}" data-act="nav" data-screen="${id}">${icon(name)}<span>${label}</span></a>`).join("")}</nav>`;
+}
+
+function homeScreen() {
+  const person = child();
+  const place = `группа ${person.group} · ${person.age_label}`;
+  const attend = summary(person);
+  const event = person.events.find((item) => item.ahead) || null;
+  const program = person.programs.find((item) => item.current);
+  const report = person.id === "sofia"
+    ? { opened: person.reportOpened, month: "Ноябрь" }
+    : { opened: true, month: "Октябрь" };
+  const signup = event && (event.signup === "registered" ? "Вы записаны" : event.signup === "requested" ? "Заявка отправлена" : event.kind_label);
+  return `
+    <section class="hero">
+      <div class="ph" style="--h:${hue(person.first_name)}">${esc(person.first_name.slice(0, 1))}</div>
+      <div class="meta">
+        <h1 class="d">${esc(person.first_name)}</h1>
+        <p class="sub">${esc(place)}</p>
+        <p class="muted">Филиал ${esc(person.branch)}</p>
+      </div>
+    </section>
+    <a class="card report-card${report.opened ? "" : " new"}" href="#/${person.id}/report" data-act="nav" data-screen="report">
+      <span class="chip">${report.opened ? "Прочитан" : "Новый отчёт"}</span>
+      <h3>${esc(report.month)} в Daisy: что получается у ребёнка</h3>
+      <p>${report.opened ? "Вы уже открывали этот отчёт." : "Что проходили, над чем работаем и задание на дом."}</p>
+      ${daisyBloom()}
+    </a>
+    <div class="grid2">
+      <a class="card" href="#/${person.id}/more/schedule" data-act="nav" data-screen="sub" data-section="schedule">
+        <span class="label">Ближайшее занятие</span>
+        <b class="big">${esc(person.next_lesson.day)}, ${esc(person.next_lesson.date_label)}</b>
+        <span class="sub">${esc(person.next_lesson.starts_at)} · ${esc(person.next_lesson.title)}</span>
+      </a>
+      <a class="card" href="#/${person.id}/more/attendance" data-act="nav" data-screen="sub" data-section="attendance">
+        <span class="label">Посещаемость</span>
+        <b class="big">${attend.present} из ${attend.marked}</b>
+        <span class="sub">${attend.needs_reason ? "Укажите причину пропуска" : attend.absences ? absenceLine(attend.absences) : "Без пропусков"}</span>
+      </a>
+      <a class="card" href="#/${person.id}/event/${event ? event.id : ""}" data-act="nav" data-screen="${event ? "event" : "events"}" data-event="${event ? event.id : ""}">
+        <span class="label">Ближайшее событие</span>
+        ${event ? `<b class="big">${esc(event.date_label)}, ${esc(event.starts_at)}</b><span class="sub">${esc(signup)} · ${esc(event.title)}</span>` : `<b>Ничего не запланировано</b>`}
+      </a>
+      <a class="card" href="#/${person.id}/more/subscription" data-act="nav" data-screen="sub" data-section="subscription">
+        <span class="label">Абонемент</span>
+        <b class="big">${esc(person.sub.current.month_label)}</b>
+        <span class="chip ${person.sub.current.paid ? "ok" : "bad"}">${person.sub.current.paid ? "Оплачен" : "Не оплачен"}</span>
+      </a>
+    </div>
+    <a class="card program-card" href="#/${person.id}/learn/program" data-act="nav" data-screen="learn" data-tab="program">
+      <span class="label">Чему учимся в ${esc(IN_MONTH[program.month_label])}</span>
+      ${program.directions.map((line) => `<p class="dir-line"><span class="dir-dot" style="background:${directionColor(line.name)}"></span><span><b>${esc(line.name)}:</b> ${esc(line.topics)}</span></p>`).join("")}
+    </a>
+    <div class="row head-row"><span class="label grow">Уведомления</span><a href="#/${person.id}/notifications" data-act="nav" data-screen="notifications">Все</a></div>
+    <div class="list">
+      ${person.notices.slice(0, 2).map((note) => `<a class="li${note.unread ? " unread" : ""}" href="#" data-act="notice" data-id="${note.id}"><span class="grow"><b>${esc(note.title)}</b><small>${esc(note.text)}</small></span></a>`).join("")}
+    </div>`;
+}
+
+function learnScreen() {
+  const person = child();
+  const tabsRow = `<div class="seg" role="group">
+    <button type="button" aria-pressed="${ui.learnTab === "program"}" data-act="learn" data-tab="program">Программа</button>
+    <button type="button" aria-pressed="${ui.learnTab === "reports"}" data-act="learn" data-tab="reports">Отчёты</button>
+    <button type="button" aria-pressed="${ui.learnTab === "videos"}" data-act="learn" data-tab="videos">Видео</button>
+  </div>`;
+  let body = "";
+  if (ui.learnTab === "program") {
+    const selected = person.programs.find((item) => item.id === ui.programId) || person.programs.find((item) => item.current) || person.programs.at(-1);
+    body = `<div class="months">${person.programs.map((item) => `<button type="button" class="mo${item.current ? " now" : ""}" aria-pressed="${item.id === selected.id}" data-act="program" data-id="${item.id}">${MONTH_SHORT[MONTHS.indexOf(item.month_label)]}<small>${item.current ? "сейчас" : item.ahead ? "впереди" : "пройден"}</small></button>`).join("")}</div>
+      <h2 class="d program-title">${esc(selected.month_label)}${selected.current ? " · сейчас" : ""}</h2>
+      ${selected.directions.map((direction) => `<article class="card dir"><div class="dir-head"><span class="dir-dot" style="background:${directionColor(direction.name)}"></span><h3>${esc(direction.name)}</h3></div><dl class="kv"><dt>Темы</dt><dd>${esc(direction.topics)}</dd><dt>Цель</dt><dd>${esc(direction.goal)}</dd><dt>Будет уметь</dt><dd>${esc(direction.can_do)}</dd></dl></article>`).join("")}`;
+  }
+  if (ui.learnTab === "reports") {
+    const opened = person.id === "mark" || person.reportOpened;
+    body = `<div class="report-index"><a class="report-month${opened ? "" : " new"}" href="#/${person.id}/report" data-act="nav" data-screen="report"><span class="label">${opened ? "Прочитан" : "Новый"}</span><h2>${person.id === "sofia" ? "Ноябрь" : "Октябрь"}</h2><p class="muted">2026</p></a><p class="fine">Отчёт приходит раз в месяц, после того как школа его проверит.</p></div>`;
+  }
+  if (ui.learnTab === "videos") {
+    if (!person.photo_video) body = empty("Видео закрыты", `${person.first_name} не попадает в групповые записи, пока в «Документах и согласиях» не включена отметка на фото и видео.`);
+    else if (!person.videos.length) body = empty("Записей пока нет", "Школа загружает одно видео на группу и дату. Текста к ролику нет.");
+    else body = `<div class="video-feed">${person.videos.map((video) => `<article class="card"><span class="label">${esc(video.date_label)}</span>${ui.videoOpen === video.id ? `<div class="fake-video"><b>Запись группы</b><span>В кабинете здесь плеер с файлом школы. В демо ролик не приложен.</span></div>` : `<button class="fake-video" type="button" data-act="video" data-id="${video.id}"><b>Смотреть запись</b><span>${esc(video.date_label)}</span></button>`}</article>`).join("")}</div>`;
+  }
+  return `<h1 class="d page-title">Обучение</h1>${tabsRow}${body}`;
+}
+
+function reportScreen() {
+  const person = child();
+  person.reportOpened = true;
+  const note = person.notices.find((item) => item.screen === "report");
+  if (note) note.unread = false;
+  const name = person.first_name;
+  const studied = person.id === "sofia"
+    ? "Поворот и пауза в конце дорожки\nСерия из трёх кадров\nДиалог на двоих"
+    : "Стойка до конца счёта\nОдин кадр улыбки\nКак тебя зовут";
+  const strengths = person.id === "sofia"
+    ? "София сама ловит паузу перед финальным кадром. Фразу в этюде договаривает."
+    : "Марк уверенно называет имя и не прячется от камеры.";
+  const focus = person.id === "sofia" ? "Длина шага под музыку: пока ускоряется на последней четверти." : "Достоять до конца счёта, не переминаясь.";
+  const homework = person.id === "sofia" ? "Дома пройти дорожку под ту же музыку и остановиться на счёт четыре." : "Рассказать дома стишок до конца, глядя на кого-то одного.";
+  return `<article class="report"><header class="report-lead"><span class="label">${person.id === "sofia" ? "Ноябрь" : "Октябрь"} в Daisy</span><h1 class="d">${esc(name)}, группа ${esc(person.group)}</h1></header>${block("Что проходили", studied)}${block("Что получается", strengths, true)}${block("Над чем работаем", focus)}${block("Задание на дом", homework)}<p class="fine report-note">Отчёт проверен в кабинете школы.</p></article>`;
+}
+function block(title, text, accent) {
+  const lines = text.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  const inner = lines.length > 1 ? `<ul>${lines.map((line) => `<li>${esc(line)}</li>`).join("")}</ul>` : `<p>${esc(text)}</p>`;
+  return `<section class="report-block${accent ? " accent" : ""}"><h4>${esc(title)}</h4>${inner}</section>`;
+}
+
+function progressScreen() {
+  const person = child();
+  const points = person.points;
+  const letters = { A: "А", B: "Б", C: "В" };
+  const hints = { A: "Начало", B: "после 1-го блока", C: "итог года" };
+  const rail = ["A", "B", "C"].map((code) => {
+    const point = points.find((item) => item.code === code);
+    if (!point) return `<div class="pt wait"><b>${letters[code]}</b><small>ещё нет</small></div>`;
+    return `<div class="pt"><b>${letters[code]}</b><small>${esc(point.date_label.split(" ")[1] ? MONTHS[["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"].indexOf(point.date_label.split(" ")[1])] || point.date_label : point.date_label)}<br>${hints[code]}</small></div>`;
+  }).join("");
+  const earlier = points[0];
+  const later = points[points.length - 1];
+  const rows = skillRows(points);
+  const grew = points.length > 1 ? rows.filter((row) => row.left && row.right && row.right.score > row.left.score).length : 0;
+  const head = points.length < 2
+    ? `<section class="card compare-card"><h3 class="d">${esc(earlier.label)}</h3><p class="muted">Число справа — балл на этой точке. Шкала 1–3, без сравнения с другими детьми. Следующая точка покажет, что изменилось.</p></section>`
+    : `<section class="card compare-card"><div class="compare-top"><h3 class="d grow">Было → стало</h3>${grew ? `<span class="grew">${grewLabel(grew)}</span>` : ""}</div><div class="legend"><span><i class="was"></i>${esc(earlier.label)}</span><span><i class="now"></i>${esc(later.label)}</span><span class="muted">Шкала 1–3, без сравнения с другими детьми</span></div></section>`;
+  const board = `<section class="card skill-board">${rows.map((row) => {
+    const skill = row.right || row.left;
+    const bars = [1, 2, 3].map((step) => {
+      const was = row.left && step <= row.left.score;
+      const now = step <= (row.right?.score ?? 0);
+      return `<i class="${was ? "was" : ""} ${now ? "on" : ""}"></i>`;
+    }).join("");
+    const change = row.left && row.right ? `${row.left.score} → ${row.right.score}` : String((row.right || row.left).score);
+    return `<div class="skill-row"><div class="skill-top"><div><b>${esc(skill.name)}</b><small>${esc(skill.assessor)}</small></div><span class="skill-change">${change}</span></div><span class="skill-bar" aria-hidden="true">${bars}</span><p class="muted skill-meaning">${esc(skill.meaning)}</p></div>`;
+  }).join("")}</section>`;
+  const clips = points.flatMap((item) => item.videos.map((video) => ({ ...video, code: item.code })));
+  let videos = "";
+  if (!person.photo_video) {
+    videos = `<section class="card"><h2 class="d">Видео диагностик</h2><p class="muted">Дефиле и видеовизитка ${esc(person.first_name)} откроются после отметки в <a href="#/${person.id}/more/docs" data-act="nav" data-screen="sub" data-section="docs">документах и согласиях</a>.</p></section>`;
+  } else if (clips.length) {
+    videos = `<section class="card"><h2 class="d">Видео диагностик</h2><div class="diag-grid">${clips.map((clip) => {
+      const key = `${clip.code}-${clip.kind}`;
+      const paint = TILE[`${clip.kind}-${clip.code}`] || TILE["defile-A"];
+      const title = `${clip.kind === "card" ? "Визитка" : "Дефиле"} · ${letters[clip.code] || clip.code}`;
+      if (ui.diag === key) return `<div class="diag-tile" style="background:${paint}"><div class="fake-video"><b>${esc(title)}</b><span>Файл диагностики в демо не приложен.</span></div></div>`;
+      return `<button type="button" class="diag-tile" style="background:${paint}" data-act="diag" data-id="${key}"><span class="diag-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span><b>${esc(title)}</b></button>`;
+    }).join("")}</div></section>`;
+  }
+  const notes = [...points].reverse().filter((item) => item.works || item.focus || item.goal).map((item) => `<article class="card point-note"><h2 class="d">Комментарий педагога, ${esc(item.label.replace("Точка", "точка"))}</h2><section><h4>Что получается</h4><p>${esc(item.works)}</p></section><section><h4>Над чем работаем</h4><p>${esc(item.focus)}</p></section><section><h4>Цель на следующий блок</h4><p>${esc(item.goal)}</p></section></article>`).join("");
+  return `<h1 class="d page-title">Прогресс</h1><div class="progress-feed"><div class="points">${rail}</div>${head}${board}${videos}${notes}</div>`;
+}
+function skillRows(points) {
+  const earlier = points[0];
+  const later = points[points.length - 1];
+  const before = new Map(earlier.scores.map((score) => [score.code, score]));
+  const after = new Map((points.length > 1 ? later : earlier).scores.map((score) => [score.code, score]));
+  const codes = [];
+  for (const score of (points.length > 1 ? later.scores.concat(earlier.scores) : earlier.scores)) {
+    if (!codes.includes(score.code)) codes.push(score.code);
+  }
+  return codes.map((code) => ({ code, left: points.length > 1 ? before.get(code) : undefined, right: after.get(code) || before.get(code) }));
+}
+
+function galleryScreen() {
+  const person = child();
+  const albums = person.albums.filter((album) => person.photo_video || album.kind === "personal");
+  if (!albums.length) {
+    return `<h1 class="d page-title">Галерея</h1>${empty("Альбомов нет", person.photo_video ? "Школа собирает альбом группы или личную фотосессию и загружает фотографии." : `Групповые альбомы ${person.first_name} откроются после отметки на фото и видео.`)}`;
+  }
+  const note = person.photo_video ? "" : `<p class="fine">Групповые альбомы закрыты, пока в <a href="#/${person.id}/more/docs" data-act="nav" data-screen="sub" data-section="docs">документах и согласиях</a> не включена отметка на фото и видео. Ниже только личные фотосессии.</p>`;
+  return `<h1 class="d page-title">Галерея</h1>${note}<div class="album-grid">${albums.map((album) => {
+    const cover = album.photos[0];
+    const hearts = album.photos.filter((photo) => photo.heart).length;
+    return `<button class="album-card" type="button" data-act="album" data-id="${album.id}"><img src="${cover.url}" alt=""><span><b>${esc(album.title)}</b><small>${esc(album.date_label)} · ${album.photos.length} фото · ${album.kind === "personal" ? "фотосессия" : "группа"}${hearts ? ` · ♥ ${hearts}` : ""}</small></span></button>`;
+  }).join("")}</div>`;
+}
+function albumScreen() {
+  const person = child();
+  const album = person.albums.find((item) => item.id === ui.albumId) || person.albums[0];
+  if (album.kind === "group" && !person.photo_video) return galleryScreen();
+  return `<div class="album-open"><button class="back-text" type="button" data-act="nav" data-screen="gallery">← Альбомы</button><h2 class="d">${esc(album.title)}</h2><div class="shot-grid">${album.photos.map((photo, index) => `<button class="shot" type="button" data-act="shot" data-index="${index}"><img src="${photo.url}" alt="">${photo.heart ? `<span class="shot-heart" aria-label="В избранном">♥</span>` : ""}</button>`).join("")}</div></div>`;
+}
+function lightbox() {
+  if (ui.shot === null || ui.screen !== "album") return "";
+  const album = child().albums.find((item) => item.id === ui.albumId);
+  if (!album) return "";
+  const photo = album.photos[ui.shot];
+  return `<div class="lightbox" role="dialog" aria-modal="true" aria-label="${esc(album.title)}" data-act="close-shot"><div class="lightbox-bar" data-act="stop"><button type="button" data-act="close-shot">Закрыть</button><span>${ui.shot + 1} из ${album.photos.length}</span><a href="${photo.url}" download>Скачать</a></div><img src="${photo.url}" alt="" data-act="stop"><div class="lightbox-bar" data-act="stop"><button type="button" data-act="shot-step" data-dir="-1">Назад</button><button type="button" class="${photo.heart ? "loved" : ""}" data-act="heart">${photo.heart ? "В избранном" : "Сердечко"}</button><button type="button" data-act="shot-step" data-dir="1">Дальше</button></div></div>`;
+}
+
+function eventsScreen() {
+  const person = child();
+  const upcoming = person.events.filter((event) => event.ahead);
+  const past = person.events.filter((event) => !event.ahead);
+  const card = (event) => {
+    const status = event.signup === "registered" ? "Вы записаны" : event.signup === "requested" ? "Заявка отправлена" : "";
+    const price = event.price === 0 ? "Бесплатно" : event.price ? money(event.price) : "";
+    return `<a class="card event-card" href="#/${person.id}/event/${event.id}" data-act="nav" data-screen="event" data-event="${event.id}"><span class="label">${esc(event.kind_label)}</span><h2 class="d">${esc(event.title)}</h2><p>${esc(event.starts_at ? `${event.date_label}, ${event.starts_at}` : event.date_label)}</p><p class="muted">${esc([event.place, price, status].filter(Boolean).join(" · "))}</p></a>`;
+  };
+  return `<h1 class="d page-title">Мероприятия</h1>${upcoming.length ? `<div class="event-list">${upcoming.map(card).join("")}</div>` : ""}${past.length ? `<h2 class="d event-past-title">Прошли</h2><div class="event-list">${past.map(card).join("")}</div>` : ""}`;
+}
+function eventScreen() {
+  const event = child().events.find((item) => item.id === ui.eventId) || child().events[0];
+  const price = event.price === 0 ? "Бесплатно" : money(event.price);
+  let form = "";
+  if (event.ahead && (event.signup === "requested" || event.signup === "registered")) {
+    form = `<div class="event-form"><button class="btn ghost" type="button" data-act="event-cancel">${event.signup === "registered" ? "Отменить запись" : "Отменить заявку"}</button></div>`;
+  }
+  if (event.signup === "none" && event.ahead) {
+    form = `<form class="event-form" data-act="stop"><label class="field"><span>Сообщение школе, если нужно</span><textarea class="input" id="event-note" placeholder="Необязательно">${esc(ui.draft.eventNote)}</textarea></label><button class="btn" type="button" data-act="event-send">Хочу записаться</button></form>`;
+  }
+  const status = event.signup === "registered" ? `<p class="event-status">Вы записаны.</p>` : event.signup === "requested" ? `<p class="event-status">Заявка отправлена.</p>` : "";
+  return `<article class="card event-card"><span class="label">${esc(event.kind_label)}</span><h1 class="d">${esc(event.title)}</h1><p>${esc(event.date_label)}, ${esc(event.starts_at)}</p><p class="muted">${esc([event.place, price].filter(Boolean).join(" · "))}</p><p class="event-text">${esc(event.description)}</p>${status}${form}</article>`;
+}
+
+function moreScreen() {
+  const rows = [["attendance", "Посещаемость"], ["subscription", "Абонемент"], ["schedule", "Расписание и группа"], ["teachers", "Педагоги"], ["contacts", "Контакты школы"], ["invite", "Пригласи друга"], ["rate", "Оценка школы"], ["profile", "Анкета"], ["docs", "Документы и согласия"]];
+  return `<h1 class="d page-title">Ещё</h1><div class="list">${rows.map(([id, title]) => `<a class="li" href="#/${child().id}/more/${id}" data-act="nav" data-screen="sub" data-section="${id}"><span class="grow"><b>${title}</b></span><span class="chev">${icon("chev")}</span></a>`).join("")}</div><button class="btn ghost" type="button" data-act="logout">Выйти</button><p class="fine">Вход для +7 912 ••• •• 00. На семью одновременно до трёх устройств: новое отключает самое давнее. Это демо: сервер не проверяет код.</p>`;
+}
+
+function scheduleScreen() {
+  const person = child();
+  const place = `Филиал ${person.branch}, ${person.address}`;
+  return `<div class="schedule"><section class="card schedule-head"><span class="label">Группа</span><h3 class="d">${esc(person.group)} · ${esc(person.age_label)}</h3><p class="place-line"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.7 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>${esc(place)}</span></p></section><div class="list">${person.lessons.map((lesson) => `<div class="li"><span class="day-mark">${esc(lesson.day)}</span><span class="grow"><b class="lesson-time">${esc(lesson.starts_at)}</b><small>${esc(lesson.title)}</small></span></div>`).join("")}</div><section class="card"><span class="label">Ближайшее занятие</span><b>${esc(person.next_lesson.day)}, ${esc(person.next_lesson.date_label)}, ${esc(person.next_lesson.starts_at)}</b><p class="muted">${esc(person.next_lesson.title)}</p></section></div>`;
+}
+
+function attendanceScreen() {
+  const person = child();
+  const months = [{ year: 2026, month: 10 }, { year: 2026, month: 11 }, { year: 2026, month: 12 }];
+  if (!ui.cal) ui.cal = { year: 2026, month: 11 };
+  const index = months.findIndex((item) => item.year === ui.cal.year && item.month === ui.cal.month);
+  const prev = index > 0 ? months[index - 1] : null;
+  const next = index < months.length - 1 ? months[index + 1] : null;
+  const prefix = `${ui.cal.year}-${pad(ui.cal.month)}`;
+  const days = person.days.filter((day) => day.date.startsWith(prefix));
+  const grouped = new Map();
+  for (const day of days) {
+    const list = grouped.get(day.date) || [];
+    list.push(day);
+    grouped.set(day.date, list);
+  }
+  const needing = days.find((day) => day.state === "absent" && !day.reason);
+  const selected = ui.picked && grouped.has(ui.picked) ? ui.picked : (needing?.date || [...days].reverse().find((day) => day.state !== "ahead")?.date || days[0]?.date || null);
+  const marked = days.filter((day) => day.state === "present" || day.state === "absent");
+  const present = marked.filter((day) => day.state === "present").length;
+  const cells = cellsOf(ui.cal.year, ui.cal.month).map((day, cell) => {
+    if (!day) return `<span></span>`;
+    const iso = `${prefix}-${pad(day)}`;
+    const list = grouped.get(iso);
+    if (!list) return `<span class="num">${day}</span>`;
+    const paint = tone(list);
+    return `<button type="button" class="${paint}${iso === selected ? " picked" : ""}" aria-pressed="${iso === selected}" data-act="pick-day" data-date="${iso}">${day}</button>`;
+  }).join("");
+  const chosen = selected ? grouped.get(selected) || [] : [];
+  const detail = chosen.length ? `<div class="cal-detail"><b>${esc(chosen[0].date_label)}, ${weekdayName(chosen[0].date)}</b>${chosen.map((lesson) => lessonCard(lesson)).join("")}</div>` : "";
+  return `<section class="cal"><div class="cal-head"><div class="cal-title"><button type="button" aria-label="Предыдущий месяц" data-act="month" data-year="${prev ? prev.year : ""}" data-month="${prev ? prev.month : ""}" ${prev ? "" : "disabled"}>‹</button><h2>${MONTHS[ui.cal.month - 1]}</h2><button type="button" aria-label="Следующий месяц" data-act="month" data-year="${next ? next.year : ""}" data-month="${next ? next.month : ""}" ${next ? "" : "disabled"}>›</button></div>${marked.length ? `<span class="cal-score">${present} из ${marked.length}</span>` : ""}</div><div class="cal-week">${["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((name) => `<span>${name}</span>`).join("")}</div><div class="cal-grid">${cells}</div>${detail}</section>`;
+}
+function tone(lessons) {
+  const due = lessons.filter((item) => item.state !== "ahead");
+  const marked = due.filter((item) => item.state === "present" || item.state === "absent");
+  if (!marked.length) return "wait";
+  if (marked.length < due.length) return "mixed";
+  const present = marked.filter((item) => item.state === "present").length;
+  if (present && present < marked.length) return "mixed";
+  return present ? "here" : "miss";
+}
+function lessonCard(lesson) {
+  const key = `${lesson.date}-${lesson.starts_at}`;
+  const paint = lesson.state === "present" ? "here" : lesson.state === "absent" ? "miss" : "wait";
+  const needs = lesson.state === "absent" && !lesson.reason;
+  let status = "Ещё впереди.";
+  if (lesson.state === "present") status = "На занятии.";
+  if (lesson.state === "absent" && !lesson.reason) status = "Пропуск.";
+  if (lesson.state === "absent" && lesson.reason) {
+    status = [lesson.reason_label, lesson.note].filter(Boolean).join(". ");
+    status += lesson.note ? "." : "";
+    if (!status.endsWith(".")) status += ".";
+    status += " Отработку или продление выбирает школа.";
+  }
+  const form = needs && ui.reasonKey === key ? `<form class="reason-form" data-act="stop"><div class="seg" role="group">${[["illness", "Болезнь"], ["family", "Семейные обстоятельства"], ["other", "Другое"]].map(([code, label]) => `<button type="button" aria-pressed="${ui.draft.reason === code}" data-act="reason" data-reason="${code}">${label}</button>`).join("")}</div><label class="field"><span>Пояснение, если нужно</span><textarea class="input" id="reason-note" rows="3" maxlength="400">${esc(ui.draft.reasonNote)}</textarea></label><label class="field"><span>Файл, если нужно</span><input class="input" id="reason-file" type="file" accept="image/*,.pdf"></label><button class="btn" type="button" data-act="reason-save" data-key="${key}" ${ui.draft.reason ? "" : "disabled"}>Сохранить причину</button></form>` : "";
+  const button = needs && ui.reasonKey !== key ? `<button type="button" data-act="reason-open" data-key="${key}">Указать причину</button>` : "";
+  return `<article class="lesson-block ${paint}">${lesson.starts_at ? `<b>${esc(lesson.starts_at)}, ${esc(lesson.title)}</b>` : ""}<p class="${lesson.state === "present" || lesson.state === "absent" ? "" : "muted"}">${esc(status)}</p>${lesson.fileName ? `<span class="fine">Файл: ${esc(lesson.fileName)}</span>` : ""}${button}${form}</article>`;
+}
+
+function monthCard(row, current) {
+  const due = !row.paid && row.due_on ? `<p class="muted">Оплатить до ${esc(dateLabel(row.due_on))}</p>` : "";
+  return `<section class="card"><span class="label">${current ? "Текущий месяц" : row.year}</span><div class="name-row"><b class="big">${esc(row.month_label)}</b><span class="chip ${row.paid ? "ok" : "bad"}">${row.paid ? "Оплачен" : "Не оплачен"}</span></div>${row.lessons_note ? `<p class="sub">${esc(row.lessons_note)}</p>` : ""}${due}</section>`;
+}
+function subscriptionScreen() {
+  const person = child();
+  const open = person.sub.request?.status === "requested";
+  const plan = PLANS.find((item) => item.id === ui.planId) || PLANS[0];
+  const term = plan.terms.find((item) => item.months === ui.planMonths) || plan.terms[0];
+  const request = open ? `<section class="card"><span class="label">Продление</span><div class="name-row"><b>${esc(person.sub.request.plan_name)}</b><span class="chip">Заявка отправлена</span></div><p class="muted">${esc(monthsLabel(person.sub.request.months))} · ${esc(money(person.sub.request.amount))}</p><button class="btn ghost" type="button" data-act="pass-cancel">Отменить заявку</button></section>` : "";
+  const ask = !open ? `<section class="card"><span class="label">Продление</span><p class="muted">Выберите тариф группы. Заявка не списывает деньги: школа отметит месяцы после подтверждения.</p><div class="choice-row" role="group" aria-label="Тариф">${PLANS.map((item) => `<button type="button" class="choice" aria-pressed="${item.id === plan.id}" data-act="plan" data-id="${item.id}"><b>${esc(item.name)}</b><small>${esc(item.details)}</small></button>`).join("")}</div><div class="choice-row" role="group" aria-label="Срок">${plan.terms.map((item) => `<button type="button" class="choice" aria-pressed="${item.months === term.months}" data-act="term" data-months="${item.months}">${esc(monthsLabel(item.months))}</button>`).join("")}</div><p class="event-status">К оплате: ${esc(money(term.price))}</p><button class="btn" type="button" data-act="pass-send">Оставить заявку</button></section>` : "";
+  return `<div class="schedule">${monthCard(person.sub.current, true)}${request}${ask}${person.sub.history.map((row) => monthCard(row, false)).join("")}</div>`;
+}
+
+function peopleScreen(kind) {
+  const rows = kind === "teachers" ? TEACHERS : CONTACTS;
+  return `<div class="people">${kind === "teachers" ? `<button class="btn ghost" type="button" data-act="sheet" data-sheet="support">Написать администратору</button>` : ""}${rows.map((row) => `<button class="card person-row" type="button" data-act="person" data-kind="${kind}" data-id="${row.id}"><span class="portrait" style="--h:${hue(row.name)}">${esc(row.name.slice(0, 1))}</span><div>${row.teaches ? `<span class="chip">${esc(row.teaches)}</span>` : ""}<h3 class="d">${esc(row.name)}</h3>${row.reach ? `<p>${esc(row.reach)}</p>` : ""}${row.about || row.topics ? `<p class="muted">${esc(row.about || row.topics)}</p>` : ""}</div></button>`).join("")}</div>`;
+}
+function rateScreen() {
+  if (ui.rating) {
+    return `<section class="card rate-done"><span class="label">Ноябрь</span><b class="big">${ui.rating.score}</b><p class="sub">Спасибо. Следующая оценка — в следующем месяце.</p>${ui.rating.comment ? `<p class="muted">${esc(ui.rating.comment)}</p>` : ""}</section>`;
+  }
+  const scale = Array.from({ length: 10 }, (_, index) => index + 1).map((value) => `<button type="button" aria-pressed="${ui.rateScore === value}" data-act="score" data-score="${value}">${value}</button>`).join("");
+  return `<form class="rate-form" data-act="stop"><p class="sub">Как вам школа за ноябрь? Один раз в месяц, от 1 до 10.</p><div class="rate-scale" role="group" aria-label="Оценка от 1 до 10">${scale}</div><label class="field"><span>Что важно сказать</span><textarea class="input" id="rate-note" rows="3" placeholder="Необязательно. Пустое поле школе не подставим.">${esc(ui.draft.rateComment)}</textarea></label><button class="btn" type="button" data-act="rate-send" ${ui.rateScore == null ? "disabled" : ""}>${ui.rateScore == null ? "Выберите оценку" : "Отправить"}</button></form>`;
+}
+function profileScreen() {
+  return `<div class="card"><h3>Ивановы</h3><p class="sub">Телефон для входа: +7 912 000-00-00</p>${Object.values(kids).map((item) => `<p>${esc(item.first_name)} · ${esc(item.group)} · ${esc(item.branch)}</p>`).join("")}<p class="fine">Фото, дату рождения и запрос к обучению родитель заполнит, когда появится анкета. Сейчас эти поля пустые.</p></div>`;
+}
+function docsScreen() {
+  const person = child();
+  return `<section class="card consent-row"><div><b>Фото и видео · ${esc(person.first_name)}</b><p class="muted">Отметка открывает групповые записи, групповые альбомы и видео точек прогресса. Юридический текст согласия школа приложит отдельно.</p></div><button class="switch" type="button" role="switch" aria-checked="${person.photo_video}" aria-label="Фото и видео" data-act="consent"><span></span></button></section>`;
+}
+function subScreen() {
+  if (ui.section === "schedule") return scheduleScreen();
+  if (ui.section === "attendance") return attendanceScreen();
+  if (ui.section === "subscription") return subscriptionScreen();
+  if (ui.section === "teachers") return peopleScreen("teachers");
+  if (ui.section === "contacts") return peopleScreen("contacts");
+  if (ui.section === "invite") return empty("Пока пусто", "Персональная ссылка и условия подарка ещё не заданы.");
+  if (ui.section === "rate") return rateScreen();
+  if (ui.section === "profile") return profileScreen();
+  if (ui.section === "docs") return docsScreen();
+  return empty("Пока пусто", "Этого раздела ещё нет.");
+}
+function notificationsScreen() {
+  const person = child();
+  const push = `<section class="card"><span class="label">На этом устройстве</span><p>${ui.pushOn ? "Уведомления включены. Когда школа отправит отчёт или точку, браузер покажет сообщение." : "Можно получать web push, когда школа отправит отчёт, точку прогресса или событие. Мессенджер подключим отдельно."}</p><button class="btn${ui.pushOn ? " ghost" : ""}" type="button" data-act="push">${ui.pushOn ? "Выключить на этом устройстве" : "Показывать уведомления"}</button><p class="fine">В демо разрешение браузера не запрашивается: переключатель только показывает, как выглядит включенное состояние.</p></section>`;
+  const list = `<div class="list">${person.notices.map((note) => `<a class="li${note.unread ? " unread" : ""}" href="#" data-act="notice" data-id="${note.id}"><span class="grow"><b>${esc(note.title)}</b><small>${esc(note.text)}</small></span></a>`).join("")}</div>`;
+  return `${push}${list}`;
+}
+function loginScreen() {
+  const phone = formatPhone(ui.draft.phone).text;
+  const ready = ui.draft.phone.length === 10;
+  const codeReady = ui.draft.code.join("").length === 4;
+  if (ui.loginStep === 0) {
+    return `<div class="login"><div class="in"><div class="steps"><i class="on"></i><i></i><i></i></div><div class="logo">${daisyMark()}<span>Daisy</span></div><h1 class="d">Кабинет родителя</h1><p class="sub">Введите номер — пришлём код.</p><label class="field"><span>Телефон</span><input class="input" id="phone" inputmode="tel" autocomplete="tel" placeholder="+7 900 000-00-00" value="${esc(phone)}"></label><button class="btn" id="send-code" type="button" data-act="send-code" ${ready ? "" : "disabled"}>Получить код</button><p class="fine">Если номер не найден, обратитесь в филиал. В демо подойдёт любой полный номер.</p><button class="sub linkish" type="button" data-act="enter-now">Сразу открыть кабинет</button></div></div>`;
+  }
+  if (ui.loginStep === 1) {
+    return `<div class="login"><div class="in"><div class="steps"><i class="on"></i><i class="on"></i><i></i></div><h1 class="d">Код из журнала</h1><p class="sub">Для номера ${esc(phone)}. СМС ещё не подключены: код написан в лог сервера.</p><div class="code">${ui.draft.code.map((digit, index) => `<input class="input code-cell" id="c${index}" inputmode="numeric" maxlength="1" value="${esc(digit)}" aria-label="Цифра ${index + 1}" data-index="${index}">`).join("")}</div><button class="btn" type="button" data-act="verify" ${codeReady ? "" : "disabled"}>Войти</button><p class="fine">В этой демке подойдёт любая четвёрка.</p><button class="sub linkish" type="button" data-act="login-back">Другой телефон</button></div></div>`;
+  }
+  return `<div class="login"><div class="in"><h1 class="d">Добавьте Daisy на экран</h1><p class="sub">Кабинет откроется как приложение. Уведомления о новых отчётах можно включить в разделе уведомлений.</p><div class="card"><b>iPhone</b><span class="sub">Поделиться → На экран «Домой»</span><b>Android</b><span class="sub">Меню браузера → Установить приложение</span></div><button class="btn" type="button" data-act="enter-now">Готово</button></div></div>`;
+}
+function formatPhone(digits) {
+  const d = digits.slice(0, 10);
+  let text = "+7";
+  if (d.length) text += ` ${d.slice(0, 3)}`;
+  if (d.length > 3) text += ` ${d.slice(3, 6)}`;
+  if (d.length > 6) text += `-${d.slice(6, 8)}`;
+  if (d.length > 8) text += `-${d.slice(8, 10)}`;
+  return { text, digits: d };
+}
+
+function sheets() {
+  if (ui.sheet === "kids") {
+    return `<div class="overlay"><button class="scrim" type="button" data-act="close" aria-label="Закрыть"></button><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div><h2>Чей кабинет открыть?</h2><div class="list">${Object.values(kids).map((item) => `<button class="li" type="button" data-act="child" data-id="${item.id}"><span class="av" style="--h:${hue(item.first_name)};width:44px;height:44px;font-size:18px">${esc(item.first_name.slice(0, 1))}</span><span class="grow"><b>${esc(item.first_name)}</b><small>${esc(item.group)}, филиал ${esc(item.branch)}</small></span></button>`).join("")}</div></div></div>`;
+  }
+  if (ui.sheet === "support") {
+    return `<div class="overlay center"><button class="scrim" type="button" data-act="close" aria-label="Закрыть"></button><div class="person-sheet" role="dialog" aria-modal="true"><h2 class="d" id="person-sheet-title">Чат поддержки</h2><p class="muted person-sheet-text">В кабинете эта кнопка открывает ссылку школы. Адрес задаётся в настройках сервера, в демо чат не подключён.</p><button class="btn" type="button" data-act="close">Понятно</button></div></div>`;
+  }
+  if (ui.sheet === "person" && ui.personId) {
+    const row = [...TEACHERS, ...CONTACTS].find((item) => item.id === ui.personId);
+    if (!row) return "";
+    const reach = row.reach && row.reach.startsWith("+") ? `<a class="person-sheet-reach" href="tel:${row.reach.replace(/[^\d+]/g, "")}">${esc(row.reach)}</a>` : row.reach ? `<p>${esc(row.reach)}</p>` : "";
+    return `<div class="overlay center"><button class="scrim" type="button" data-act="close" aria-label="Закрыть"></button><div class="person-sheet" role="dialog" aria-modal="true"><span class="portrait person-sheet-face" style="--h:${hue(row.name)}">${esc(row.name.slice(0, 1))}</span>${row.teaches ? `<span class="chip">${esc(row.teaches)}</span>` : ""}<h2 class="d">${esc(row.name)}</h2>${reach}${row.about || row.topics ? `<p class="muted person-sheet-text">${esc(row.about || row.topics)}</p>` : ""}</div></div>`;
+  }
+  return "";
+}
+
+function view() {
+  if (ui.screen === "home") return homeScreen();
+  if (ui.screen === "learn") return learnScreen();
+  if (ui.screen === "report") return reportScreen();
+  if (ui.screen === "progress") return progressScreen();
+  if (ui.screen === "gallery") return galleryScreen();
+  if (ui.screen === "album") return albumScreen();
+  if (ui.screen === "events") return eventsScreen();
+  if (ui.screen === "event") return eventScreen();
+  if (ui.screen === "more") return moreScreen();
+  if (ui.screen === "sub") return subScreen();
+  if (ui.screen === "notifications") return notificationsScreen();
+  return homeScreen();
+}
+
+function render() {
+  const root = document.getElementById("root");
+  if (!ui.loggedIn) {
+    root.innerHTML = loginScreen();
+    return;
+  }
+  const inside = nested() ? `${header()}${view()}` : view();
+  const top = nested() ? "" : header();
+  root.innerHTML = `<div class="app">${top}<main class="view">${inside}</main></div>${tabs()}${sheets()}${lightbox()}`;
+}
+
+function openNotice(id) {
+  const note = child().notices.find((item) => item.id === id);
+  if (!note) return;
+  note.unread = false;
+  const patch = { screen: note.screen };
+  if (note.section) patch.section = note.section;
+  if (note.screen === "report") child().reportOpened = true;
+  navigate(patch);
+}
+
+document.getElementById("root").addEventListener("click", (event) => {
+  const el = event.target.closest("[data-act]");
+  if (!el || !document.getElementById("root").contains(el)) return;
+  const act = el.dataset.act;
+  if (act === "stop") return;
+  if (el.hasAttribute("download")) return;
+  event.preventDefault();
+  if (act === "nav") {
+    const patch = { screen: el.dataset.screen, section: el.dataset.section || "", eventId: el.dataset.event || null, albumId: null, shot: null };
+    if (el.dataset.tab) { patch.learnTab = el.dataset.tab; patch.screen = "learn"; }
+    navigate(patch);
+  } else if (act === "back") history.back();
+  else if (act === "sheet") { ui.sheet = el.dataset.sheet; render(); }
+  else if (act === "close" || act === "close-shot") { ui.sheet = null; if (act === "close-shot") ui.shot = null; render(); }
+  else if (act === "child") navigate({ childId: el.dataset.id, screen: ui.screen === "album" || ui.screen === "event" ? "home" : ui.screen, picked: null, albumId: null, shot: null });
+  else if (act === "learn") navigate({ screen: "learn", learnTab: el.dataset.tab });
+  else if (act === "program") { ui.programId = el.dataset.id; render(); }
+  else if (act === "video") { ui.videoOpen = el.dataset.id; render(); }
+  else if (act === "diag") { ui.diag = el.dataset.id; render(); }
+  else if (act === "album") navigate({ screen: "album", albumId: el.dataset.id, shot: null });
+  else if (act === "shot") { ui.shot = Number(el.dataset.index); render(); }
+  else if (act === "shot-step") {
+    const album = child().albums.find((item) => item.id === ui.albumId);
+    ui.shot = (ui.shot + Number(el.dataset.dir) + album.photos.length) % album.photos.length;
+    render();
+  } else if (act === "heart") {
+    const album = child().albums.find((item) => item.id === ui.albumId);
+    const photo = album.photos[ui.shot];
+    photo.heart = !photo.heart;
+    render();
+  } else if (act === "event-send") {
+    const eventCard = child().events.find((item) => item.id === ui.eventId);
+    eventCard.signup = "requested";
+    ui.draft.eventNote = "";
+    render();
+  } else if (act === "event-cancel") {
+    const eventCard = child().events.find((item) => item.id === ui.eventId);
+    eventCard.signup = "none";
+    render();
+  } else if (act === "logout") {
+    ui.loggedIn = false;
+    ui.loginStep = 0;
+    ui.screen = "login";
+    history.pushState({ demo: 1 }, "", "#/login");
+    render();
+  } else if (act === "notice") openNotice(el.dataset.id);
+  else if (act === "month" && el.dataset.year) { ui.cal = { year: Number(el.dataset.year), month: Number(el.dataset.month) }; ui.picked = null; render(); }
+  else if (act === "pick-day") { ui.picked = el.dataset.date; ui.reasonKey = ""; render(); }
+  else if (act === "reason-open") { ui.reasonKey = el.dataset.key; ui.draft.reason = ""; ui.draft.reasonNote = ""; render(); }
+  else if (act === "reason") { ui.draft.reason = el.dataset.reason; render(); }
+  else if (act === "reason-save") {
+    const lesson = child().days.find((day) => `${day.date}-${day.starts_at}` === el.dataset.key);
+    const labels = { illness: "Болезнь", family: "Семейные обстоятельства", other: "Другое" };
+    lesson.reason = ui.draft.reason;
+    lesson.reason_label = labels[ui.draft.reason];
+    lesson.note = ui.draft.reasonNote.trim();
+    lesson.fileName = document.getElementById("reason-file")?.files?.[0]?.name || "";
+    ui.reasonKey = "";
+    const note = child().notices.find((item) => item.id === "n2");
+    if (note) note.unread = false;
+    render();
+  } else if (act === "plan") {
+    ui.planId = el.dataset.id;
+    const plan = PLANS.find((item) => item.id === ui.planId);
+    if (!plan.terms.some((item) => item.months === ui.planMonths)) ui.planMonths = plan.terms[0].months;
+    render();
+  } else if (act === "term") { ui.planMonths = Number(el.dataset.months); render(); }
+  else if (act === "pass-send") {
+    const plan = PLANS.find((item) => item.id === ui.planId);
+    const term = plan.terms.find((item) => item.months === ui.planMonths);
+    child().sub.request = { status: "requested", plan_name: plan.name, months: term.months, amount: term.price };
+    render();
+  } else if (act === "pass-cancel") { child().sub.request = null; render(); }
+  else if (act === "person") { ui.sheet = "person"; ui.personId = el.dataset.id; render(); }
+  else if (act === "score") { ui.rateScore = Number(el.dataset.score); render(); }
+  else if (act === "rate-send" && ui.rateScore != null) { ui.rating = { score: ui.rateScore, comment: ui.draft.rateComment.trim() }; render(); }
+  else if (act === "consent") { child().photo_video = !child().photo_video; render(); }
+  else if (act === "push") { ui.pushOn = !ui.pushOn; render(); }
+  else if (act === "send-code" && ui.draft.phone.length === 10) { ui.loginStep = 1; render(); document.getElementById("c0")?.focus(); }
+  else if (act === "verify" && ui.draft.code.join("").length === 4) { ui.loginStep = 2; render(); }
+  else if (act === "login-back") { ui.loginStep = 0; ui.draft.code = ["", "", "", ""]; render(); }
+  else if (act === "enter-now") navigate({ loggedIn: true, screen: "home", childId: ui.childId || "sofia" });
+});
+
+document.getElementById("root").addEventListener("input", (event) => {
+  const target = event.target;
+  if (target.id === "phone") {
+    const formatted = formatPhone(target.value.replace(/\D/g, "").replace(/^7/, "").replace(/^8/, ""));
+    ui.draft.phone = formatted.digits;
+    target.value = formatted.text;
+    const button = document.getElementById("send-code");
+    if (button) button.disabled = formatted.digits.length !== 10;
+  }
+  if (target.id === "event-note") ui.draft.eventNote = target.value;
+  if (target.id === "rate-note") ui.draft.rateComment = target.value;
+  if (target.id === "reason-note") ui.draft.reasonNote = target.value;
+  if (target.classList.contains("code-cell")) {
+    const index = Number(target.dataset.index);
+    const digit = target.value.replace(/\D/g, "").slice(-1);
+    ui.draft.code[index] = digit;
+    target.value = digit;
+    if (digit && index < 3) document.getElementById(`c${index + 1}`)?.focus();
+    const button = document.querySelector("[data-act=verify]");
+    if (button) button.disabled = ui.draft.code.join("").length < 4;
+  }
+});
+
+window.addEventListener("popstate", () => { applyHash(); render(); });
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && (ui.sheet || ui.shot !== null)) {
+    ui.sheet = null;
+    ui.shot = null;
+    render();
+  }
+});
+
+if (!location.hash) history.replaceState({ demo: 1 }, "", "#/sofia/home");
+else history.replaceState({ demo: 1 }, "", location.hash);
+applyHash();
+render();
+
+  </script>
+</body>
+</html>
